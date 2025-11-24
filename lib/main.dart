@@ -9,7 +9,7 @@ import 'presentation/screens/onboarding_screen.dart'; // Importante
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Nota: 'assets/.env' funcionará si moviste la carpeta assets a la raíz
-  await dotenv.load(fileName: "assets/.env");
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(

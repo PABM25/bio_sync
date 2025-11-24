@@ -15,7 +15,7 @@ class GeminiService {
     }
 
     // CAMBIO AQUÍ: Usamos 'gemini-1.5-flash' que es más rápido y actual.
-    _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+    _model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
   }
 
   // Carga los JSONs y prepara a la IA (Grounding)
