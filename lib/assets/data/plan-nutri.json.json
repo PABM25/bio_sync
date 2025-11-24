@@ -1,0 +1,536 @@
+{
+    "info_profesional": {
+        "nombre": "Andrea Almonacid Águila",
+        "titulo": "Nutricionista",
+        "postgrado": "Diplomada en Salud Pública"
+    },
+    "perfil_paciente": {
+        "nombre": "Pilar Bonnault",
+        "fecha": "07-10-2022",
+        "objetivo": "Mejorar estado nutricional"
+    },
+    "evaluacion_antropometrica": {
+        "peso_kg": 77.1,
+        "talla_cm": 161.5,
+        "imc": 29.5,
+        "estado_nutricional": "Sobrepeso",
+        "circunferencia_cintura_cm": 95
+    },
+    "requerimiento_nutricional_diario": {
+        "calorias_totales": 1470,
+        "macronutrientes": {
+            "proteinas": {
+                "gramos": 115,
+                "factor": 1.7
+            },
+            "carbohidratos": {
+                "gramos": 150,
+                "factor": 2.5
+            },
+            "lipidos": {
+                "gramos": 46,
+                "factor": 0.7
+            }
+        }
+    },
+    "metas_porciones_diarias": {
+        "cereales": 3,
+        "frutas": 2,
+        "verduras": "3-4",
+        "lacteos_bajos_grasas": 2,
+        "carne_leguminosas": 6,
+        "ricos_en_lipidos": 1,
+        "aceite": 0.5,
+        "azucar": 0
+    },
+    "estructura_base_comidas": [
+        {
+            "horario": "Desayuno (10:00)",
+            "formula": [
+                "1 Cereal",
+                "1 Lácteo",
+                "2 Carne/Leguminosa"
+            ],
+            "ejemplo": "2 reb. pan integral + 1 yogurt protein + 2 huevos"
+        },
+        {
+            "horario": "Colación AM",
+            "formula": [
+                "1 Fruta"
+            ],
+            "ejemplo": "1 naranja o 1 taza de arándanos"
+        },
+        {
+            "horario": "Almuerzo (15:00)",
+            "formula": [
+                "1 Cereal",
+                "2 Carne/Leguminosa",
+                "3 Verduras",
+                "Aceite"
+            ],
+            "ejemplo": "1/2 taza arroz + 150gr carne magra + ensalada"
+        },
+        {
+            "horario": "Merienda Tarde",
+            "formula": [
+                "1 Fruta",
+                "1 Lácteo",
+                "0.5 Rico en lípidos"
+            ],
+            "ejemplo": "1 manzana + 1 yogurt descremado + 1 cda mantequilla maní"
+        },
+        {
+            "horario": "Cena",
+            "formula": [
+                "1 Cereal",
+                "2 Carne/Leguminosa",
+                "2 Verduras",
+                "0.5 Rico en lípidos"
+            ],
+            "ejemplo": "1/2 taza arroz + 100gr carne + ensalada + 1/4 palta"
+        }
+    ],
+    "menu_semanal": [
+        {
+            "dia": "Lunes",
+            "comidas": {
+                "desayuno": "1 taza de té + 1 panqueque de avena (1 huevo + 4 cdas avena + 1/2 plátano + 1 cdta chía).",
+                "almuerzo": "2 porciones ensalada + 1 cucharón de porotos con tallarines integrales (200 grs).",
+                "colacion": "1 porción de fruta + 1 scoop de proteína.",
+                "cena": "1 tortilla de verduras (1 huevo + verduras) + 1 trozo de jurel (75 grs)."
+            }
+        },
+        {
+            "dia": "Martes",
+            "comidas": {
+                "desayuno": "1 taza de té + 6 galletas de salvado con 1 huevo revuelto en agua + 1 fruta (100 grs).",
+                "almuerzo": "2 porciones ensalada + 1 taza de mariscos cocidos (100 grs) + 3/4 taza de arroz blanco (150grs).",
+                "colacion": "1 scoop de proteína + 1 yogurt descremado.",
+                "cena": "2-3 porciones de ensalada + 1 lata de atún al agua."
+            }
+        },
+        {
+            "dia": "Miércoles",
+            "comidas": {
+                "desayuno": "1 yogurt descremado + 3/4 taza cereal integral (30 grs) + 1 cdta chía + 1 fruta.",
+                "almuerzo": "2 porciones ensalada + 1 croqueta de atún (120 grs) + 3/4 taza puré de papas (150 grs).",
+                "colacion": "1 scoop de proteína + 3 nueces.",
+                "cena": "200 cc sopa crema de verduras + 1 trozo pechuga de pollo (120 grs)."
+            }
+        },
+        {
+            "dia": "Jueves",
+            "comidas": {
+                "desayuno": "Pudding de chía: 200cc leche descremada + 4 cdtas chía + 2 cdas avena + 1 fruta.",
+                "almuerzo": "2 porciones ensalada + 1 trozo reineta al horno (120 grs) + 3/4 taza quínoa.",
+                "colacion": "1 porción de fruta + 1 scoop de proteína.",
+                "cena": "2-3 porciones ensalada + 2 huevos cocidos + 1 trozo quesillo (30 grs)."
+            }
+        },
+        {
+            "dia": "Viernes",
+            "comidas": {
+                "desayuno": "1 taza té + 1 pan pita integral con 1 lámina jamón pavo cocido + 1 fruta.",
+                "almuerzo": "2 porciones ensalada + 1 cucharón de lentejas con arroz integral (200 grs).",
+                "colacion": "1 porción de fruta + 1 scoop de proteína.",
+                "cena": "1 tortilla de verduras + 1 taza de camarones (100 grs)."
+            }
+        },
+        {
+            "dia": "Sábado",
+            "comidas": {
+                "desayuno": "1 taza té + 2 reb. pan molde integral con 1/2 palta pequeña + 1 fruta.",
+                "almuerzo": "2 porciones ensalada + 1 trozo pechuga pollo asada (120 grs) + 3/4 taza cuscús (150 grs).",
+                "colacion": "1 scoop de proteína + 3 nueces.",
+                "cena": "2-3 porciones ensalada + 2 huevos cocidos + 1 lámina jamón pavo."
+            }
+        },
+        {
+            "dia": "Domingo",
+            "comidas": {
+                "desayuno": "Porridge avena: 200cc leche descremada + 4 cdas avena + 1 cdta chía + 1 fruta.",
+                "almuerzo": "2 porciones ensalada + 1 trozo pollo horno (120 grs) + 2 papas pequeñas cocidas.",
+                "colacion": "1 porción de fruta + 1 scoop de proteína.",
+                "cena": "1 taza verduras salteadas + 1 trozo carne vacuno (120 grs)."
+            }
+        }
+    ],
+    "referencia_medidas_caseras": {
+        "taza": "200 cc",
+        "cucharada": "Cuchara sopera (15 cc)",
+        "cucharadita": "Cuchara de té (5 cc)",
+        "trozo_carne_50g": "6x6x1 cms"
+    },
+    "grupos_alimentos": {
+        "grupo_1_cereales": {
+            "definicion_porcion": "1 porción equivale a (peso en cocido)",
+            "alimentos": [
+                {
+                    "nombre": "Arroz, fideos, Quinua, Cous Cous",
+                    "cantidad": "3/4 taza"
+                },
+                {
+                    "nombre": "Papa",
+                    "cantidad": "1 unidad regular"
+                },
+                {
+                    "nombre": "Hallulla",
+                    "cantidad": "1/2 unidad"
+                },
+                {
+                    "nombre": "Choclo o Habas",
+                    "cantidad": "1 taza"
+                },
+                {
+                    "nombre": "Arvejas",
+                    "cantidad": "1 ½ taza"
+                },
+                {
+                    "nombre": "Masa de fajita",
+                    "cantidad": "1 unidad"
+                },
+                {
+                    "nombre": "Masa de tacos",
+                    "cantidad": "2 unidades"
+                },
+                {
+                    "nombre": "Pan molde, Pan integral",
+                    "cantidad": "2 rebanadas"
+                },
+                {
+                    "nombre": "Marraqueta",
+                    "cantidad": "1/2 unidad (1 diente)"
+                },
+                {
+                    "nombre": "Avena, Granola, Cereal de desayuno",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Barra de cereal",
+                    "cantidad": "2 unidades"
+                },
+                {
+                    "nombre": "Sémola o Chuño",
+                    "cantidad": "3 cucharadas"
+                },
+                {
+                    "nombre": "Galletas de agua",
+                    "cantidad": "6 unidades"
+                },
+                {
+                    "nombre": "Galletas de salvado",
+                    "cantidad": "5 unidades"
+                },
+                {
+                    "nombre": "Galletas de arroz",
+                    "cantidad": "3 unidades"
+                }
+            ]
+        },
+        "grupo_2_frutas": {
+            "definicion_porcion": "1 porción equivale a",
+            "alimentos": [
+                {
+                    "nombre": "Manzana, Pera, Naranja",
+                    "cantidad": "1 unidad"
+                },
+                {
+                    "nombre": "Frutilla, Frambuesa, Berries",
+                    "cantidad": "1 taza"
+                },
+                {
+                    "nombre": "Kiwi, Tunas",
+                    "cantidad": "2 unidades"
+                },
+                {
+                    "nombre": "Melón o Sandia",
+                    "cantidad": "1 taza"
+                },
+                {
+                    "nombre": "Chirimoya",
+                    "cantidad": "3/4 taza"
+                },
+                {
+                    "nombre": "Ciruela, Damasco, Mandarinas",
+                    "cantidad": "3 unidades"
+                },
+                {
+                    "nombre": "Pepino (fruta)",
+                    "cantidad": "1 unidad"
+                },
+                {
+                    "nombre": "Plátano",
+                    "cantidad": "1/2 unidad"
+                },
+                {
+                    "nombre": "Piña",
+                    "cantidad": "3/4 taza"
+                },
+                {
+                    "nombre": "Uvas",
+                    "cantidad": "10 unidades"
+                },
+                {
+                    "nombre": "Membrillo",
+                    "cantidad": "1 unidad"
+                },
+                {
+                    "nombre": "Pasas",
+                    "cantidad": "20 unidades"
+                },
+                {
+                    "nombre": "Guindas",
+                    "cantidad": "15 unidades"
+                },
+                {
+                    "nombre": "Jugo natural",
+                    "cantidad": "3/4 taza"
+                }
+            ]
+        },
+        "grupo_verduras": {
+            "nota": "En el documento original aparece listado también como Grupo 2",
+            "definicion_porcion": "1 porción equivale a (generalmente cocido, salvo indicación)",
+            "alimentos": [
+                {
+                    "nombre": "Lechuga, Repollo, Apio, Espinaca cruda, Acelga cruda, Rúcula, Achicoria, Zapallo italiano crudo, Pepino",
+                    "cantidad": "1 taza"
+                },
+                {
+                    "nombre": "Rabanitos",
+                    "cantidad": "5 unidades"
+                },
+                {
+                    "nombre": "Pimentón",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Champiñón crudo",
+                    "cantidad": "1 ½ taza"
+                },
+                {
+                    "nombre": "Cebolla cruda",
+                    "cantidad": "3/4 taza"
+                },
+                {
+                    "nombre": "Palmitos",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Espárragos",
+                    "cantidad": "5 unidades"
+                },
+                {
+                    "nombre": "Zanahoria (cruda o cocida)",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Tomate",
+                    "cantidad": "1/2 unidad"
+                },
+                {
+                    "nombre": "Betarraga",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Zapallo italiano Cocido",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Acelga, Espinaca cocido",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Porotos verdes",
+                    "cantidad": "3/4 taza"
+                },
+                {
+                    "nombre": "Coliflor, Brócoli",
+                    "cantidad": "1 taza"
+                },
+                {
+                    "nombre": "Brotes (soya, alfalfa, etc)",
+                    "cantidad": "1 taza"
+                },
+                {
+                    "nombre": "Alcachofa",
+                    "cantidad": "1 unidad"
+                }
+            ]
+        },
+        "grupo_3_lacteos": {
+            "definicion_porcion": "1 porción equivale a",
+            "subgrupos": {
+                "medios_en_grasas": [
+                    {
+                        "nombre": "Leche semi descremada caja",
+                        "cantidad": "1 taza"
+                    },
+                    {
+                        "nombre": "Leche semi descremada polvo",
+                        "cantidad": "1 cda o 3 cdtas"
+                    },
+                    {
+                        "nombre": "Yogurt Batido",
+                        "cantidad": "1 unidad (175 cc)"
+                    },
+                    {
+                        "nombre": "Leche cultivada",
+                        "cantidad": "1 taza"
+                    },
+                    {
+                        "nombre": "Quesillo",
+                        "cantidad": "2 rodajas (2 cm espesor)"
+                    },
+                    {
+                        "nombre": "Ricota",
+                        "cantidad": "3 cucharaditas"
+                    }
+                ],
+                "bajos_en_grasas": [
+                    {
+                        "nombre": "Leche descremada caja",
+                        "cantidad": "1 taza"
+                    },
+                    {
+                        "nombre": "Leche descremada en polvo",
+                        "cantidad": "1 cda o 3 cdtas"
+                    },
+                    {
+                        "nombre": "Yogurt descremado",
+                        "cantidad": "1 unidad"
+                    },
+                    {
+                        "nombre": "Leche cultivada Descremada",
+                        "cantidad": "1 taza"
+                    },
+                    {
+                        "nombre": "Quesillo Descremado",
+                        "cantidad": "2 rodajas (2 cm espesor)"
+                    },
+                    {
+                        "nombre": "Ricota magra",
+                        "cantidad": "3 cucharaditas"
+                    }
+                ]
+            }
+        },
+        "grupo_3_carnes_leguminosas": {
+            "definicion_porcion": "1 porción equivale a (peso cocido)",
+            "alimentos": [
+                {
+                    "nombre": "Carne Vacuno (posta, asiento, pollo ganso, filete, lomo liso)",
+                    "cantidad": "50 grs"
+                },
+                {
+                    "nombre": "Pechuga pollo o pavo",
+                    "cantidad": "50 grs"
+                },
+                {
+                    "nombre": "Trutro",
+                    "cantidad": "50 grs (1u trutro largo o corto)"
+                },
+                {
+                    "nombre": "Pulpa de cerdo",
+                    "cantidad": "50 grs"
+                },
+                {
+                    "nombre": "Carne Molida (tártara)",
+                    "cantidad": "2 ½ cucharadas"
+                },
+                {
+                    "nombre": "Pescado",
+                    "cantidad": "50 grs"
+                },
+                {
+                    "nombre": "Jamón de pavo o pollo",
+                    "cantidad": "1 Rodaja"
+                },
+                {
+                    "nombre": "Huevo",
+                    "cantidad": "1 unidad"
+                },
+                {
+                    "nombre": "Atún",
+                    "cantidad": "1/2 lata"
+                },
+                {
+                    "nombre": "Carne de Soya sin hidratar",
+                    "cantidad": "1/4 taza"
+                },
+                {
+                    "nombre": "Tofú",
+                    "cantidad": "1/2 taza"
+                },
+                {
+                    "nombre": "Hummus",
+                    "cantidad": "4 Cucharadas"
+                },
+                {
+                    "nombre": "Legumbres (cocidas)",
+                    "cantidad": "3/4 taza"
+                },
+                {
+                    "nombre": "Seitán",
+                    "cantidad": "1/2 Taza"
+                },
+                {
+                    "nombre": "Whey Protein (suplemento)",
+                    "cantidad": "1/2 scoop"
+                }
+            ]
+        },
+        "grupo_4_lipidos_aceites": {
+            "definicion_porcion": "1 porción equivale a",
+            "subgrupos": {
+                "alimentos_ricos_en_lipidos": [
+                    {
+                        "nombre": "Palta",
+                        "cantidad": "3 cucharadas"
+                    },
+                    {
+                        "nombre": "Aceitunas",
+                        "cantidad": "11 unidades"
+                    },
+                    {
+                        "nombre": "Nueces",
+                        "cantidad": "5 unidades (5 mariposas)"
+                    },
+                    {
+                        "nombre": "Almendras, Avellanas, Maní",
+                        "cantidad": "1/2 taza (24 a 26 unidades)"
+                    },
+                    {
+                        "nombre": "Mantequilla de maní",
+                        "cantidad": "2 cucharaditas"
+                    },
+                    {
+                        "nombre": "Leche de Almendras",
+                        "cantidad": "250 cc"
+                    }
+                ],
+                "aceites_y_grasas": [
+                    {
+                        "nombre": "Aceite Maravilla, Canola, Pepita de uva, Oliva, Coco",
+                        "cantidad": "4 cucharadas"
+                    },
+                    {
+                        "nombre": "Mantequilla / Margarina",
+                        "cantidad": "4 cucharadas"
+                    },
+                    {
+                        "nombre": "Mayonesa",
+                        "cantidad": "1 cucharada"
+                    }
+                ]
+            }
+        }
+    },
+    "indicaciones_generales": [
+        "Consumir 1.6 a 2 litros de agua diarios.",
+        "El agua debe ser el 50% de la hidratación (además de té/café).",
+        "Evitar frituras. Preferir horno, plancha, agua.",
+        "Lavado de enlatados para reducir sodio.",
+        "Incluir ejercicio al menos 3 horas a la semana."
+    ]
+}

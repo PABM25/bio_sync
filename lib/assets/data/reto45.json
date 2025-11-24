@@ -1,0 +1,3037 @@
+{
+  "nombre_plan": "Reto Fitness 45 Días",
+  "autor_calentamiento": "Chuy Almada (YouTube)",
+  "estructura_vueltas_estandar": {
+    "20_anos": 4,
+    "30_anos": 3,
+    "40_mas": 2
+  },
+  "rutina": [
+    {
+      "dia": 1,
+      "enfoque": "Cardio y Pierna",
+      "ejercicios": [
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Sentadillas de prisionero",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Desplantes",
+          "nota": "Pasos totales",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 24,
+            "30s": 20,
+            "40s_mas": 16
+          }
+        },
+        {
+          "nombre": "Saltar la cuerda imaginaria",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "2 min",
+            "30s": "1:30 min",
+            "40s_mas": "1 min"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 2,
+      "enfoque": "Abdomen y Core",
+      "ejercicios": [
+        {
+          "nombre": "Crunches abdominales cortos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plancha con toque de hombros",
+          "nota": "Toques por lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Abdominales en bicicleta",
+          "nota": "Pedaleos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plancha",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "60 seg",
+            "30s": "40 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Russian twist",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        }
+      ]
+    },
+    {
+      "dia": 3,
+      "enfoque": "Cardio y Golpes",
+      "ejercicios": [
+        {
+          "nombre": "Rodillas a la cintura (high knees)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "40 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Golpes al aire (rectos)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "40 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Plancha comando",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 14,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 4,
+      "enfoque": "Fuerza de Piernas y Abdomen",
+      "ejercicios": [
+        {
+          "nombre": "Sentadillas tocando tobillos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Elevación de piernas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Plancha jumping jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 15,
+            "30s": 12,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda imaginaria (pies juntos)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "40 seg",
+            "40s_mas": "30 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 5,
+      "enfoque": "Cardio y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 60,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Puentes de glúteo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Desplantes alternados con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 16,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Saltos con cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "2 min",
+            "30s": "1:30 min",
+            "40s_mas": "1 min"
+          }
+        },
+        {
+          "nombre": "Golpes al aire (sombra)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "2 min",
+            "30s": "1:30 min",
+            "40s_mas": "1 min"
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 6,
+      "enfoque": "Abdomen y Resistencia",
+      "ejercicios": [
+        {
+          "nombre": "Abdominales tocar talones",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plank Toe Touch / Push ups",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Abdominales en bicicleta",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plancha Spiderman (knee to elbow)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 15,
+            "30s": 12,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Mountain Climbers",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 20
+          }
+        }
+      ]
+    },
+    {
+      "dia": 7,
+      "enfoque": "Cardio y Fuerza",
+      "ejercicios": [
+        {
+          "nombre": "Rodillas al pecho (high knees)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "40 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Golpes (rectos)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "40 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Sentadillas sumo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Plancha con toque de hombros",
+          "nota": "Toques por lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Fondos Triceps (silla)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        }
+      ]
+    },
+    {
+      "dia": 8,
+      "enfoque": "Core y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Crunch lateral",
+          "nota": "Por lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plancha lateral con rotación",
+          "nota": "Por lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Abdominales estrella",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Jumping jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Jumping jacks (Serie 2)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Superman (back extension)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        }
+      ]
+    },
+    {
+      "dia": 9,
+      "enfoque": "Cardio y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Sentadillas con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Desplantes alternados",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 14
+          }
+        },
+        {
+          "nombre": "Puentes de glúteo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Patada de glúteos en flexion",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        }
+      ]
+    },
+    {
+      "dia": 10,
+      "enfoque": "Fuerza Total",
+      "ejercicios": [
+        {
+          "nombre": "Sentadillas con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plank jacks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales con piernas elevadas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Jumping jacks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Push ups",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 11,
+      "enfoque": "Cardio y Abdominales",
+      "ejercicios": [
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 60,
+            "30s": 50,
+            "40s_mas": 40
+          }
+        },
+        {
+          "nombre": "Plancha comandos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Abdominales en bicicleta",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Desplantes con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 12,
+      "enfoque": "Fuerza y Resistencia",
+      "ejercicios": [
+        {
+          "nombre": "Sentadillas profundas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Golpes (rectos)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "2 min",
+            "30s": "1:30 min",
+            "40s_mas": "1 min"
+          }
+        },
+        {
+          "nombre": "Plancha con toque de hombro",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "V ABS",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plank Toe Touch",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Lagartijas Cerradas (triceps)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        }
+      ]
+    },
+    {
+      "dia": 13,
+      "enfoque": "Cardio y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Saltos con cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "2 min",
+            "30s": "1:30 min",
+            "40s_mas": "1 min"
+          }
+        },
+        {
+          "nombre": "Puentes de glúteo con una pierna",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Desplantes laterales",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 16,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Abdominales tijeras",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Frog Pumps para gluteo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 16,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Silla eléctrica",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "1 min",
+            "40s_mas": "40 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 14,
+      "enfoque": "Fuerza Total y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Sentadillas con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Plancha lateral con levantamiento de pierna",
+          "nota": "Por lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 12
+          }
+        },
+        {
+          "nombre": "Desplantes alternados con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Abdominales tocando puntas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Fondos en una silla",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 15,
+      "enfoque": "Cardio y Fuerza",
+      "ejercicios": [
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 70,
+            "30s": 60,
+            "40s_mas": 50
+          }
+        },
+        {
+          "nombre": "Abdominales tipo V",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Desplantes caminando",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 35,
+            "30s": 25,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Plank jacks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Mountain Climbers",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 20
+          }
+        }
+      ]
+    },
+    {
+      "dia": 16,
+      "enfoque": "Fuerza y Resistencia",
+      "ejercicios": [
+        {
+          "nombre": "Sentadillas piernas juntas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 40,
+            "40s_mas": 35
+          }
+        },
+        {
+          "nombre": "Plancha elevando piernas una y una",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales en bicicleta",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 60,
+            "30s": 50,
+            "40s_mas": 40
+          }
+        },
+        {
+          "nombre": "Desplantes de princesa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Golpes (rectos)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "2 min",
+            "30s": "1:30 min",
+            "40s_mas": "1 min"
+          }
+        },
+        {
+          "nombre": "Puentes de glúteo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 17,
+      "enfoque": "Cardio Intenso y Fuerza",
+      "ejercicios": [
+        {
+          "nombre": "Saltos con cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "3 min",
+            "30s": "2:30 min",
+            "40s_mas": "2 min"
+          }
+        },
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 80,
+            "30s": 70,
+            "40s_mas": 60
+          }
+        },
+        {
+          "nombre": "Crunches laterales",
+          "nota": "Por lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Abdominales mariposas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Desplantes alternados",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas búlgaras",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 18,
+      "enfoque": "Cardio y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Desplantes estáticos",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Abdominales de tijera",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas de prisionero",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 40,
+            "40s_mas": 35
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Mountain Climbers",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "30 seg",
+            "40s_mas": "20 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 19,
+      "enfoque": "Fuerza Total y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Lagartijas (Push-ups)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Side to side squat",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 45,
+            "40s_mas": 35
+          }
+        },
+        {
+          "nombre": "Superman con pausa (hold)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales tocando tobillos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Sentadillas de prisionero",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Golpes al aire (velocidad)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 20,
+      "enfoque": "Fuerza y Cardio Combinado",
+      "ejercicios": [
+        {
+          "nombre": "Saltos con cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "3:00 min",
+            "30s": "2:30 min",
+            "40s_mas": "1:30 min"
+          }
+        },
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Sentadillas búlgaras",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Push-ups (lagartijas)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Fondos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "High Knees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        }
+      ]
+    },
+    {
+      "dia": 21,
+      "enfoque": "Cardio y Fuerza Avanzados",
+      "ejercicios": [
+        {
+          "nombre": "Burpees laterales",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Plank knee to elbow",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Mountain Climbers",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 35,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Sentadillas de prisionero con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Abdominales patadas al cielo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Sentadillas búlgaras",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 22,
+      "enfoque": "Abdominales y Resistencia",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes de princesa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plank Toe Touch",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Abdominales tocando tobillos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Correr en tu lugar",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "3 min",
+            "30s": "2:30 min",
+            "40s_mas": "2 min"
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas con un pie",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        }
+      ]
+    },
+    {
+      "dia": 23,
+      "enfoque": "Total Body y Cardio Combinado",
+      "ejercicios": [
+        {
+          "nombre": "Sentadillas con patadas (narrow squat kick)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 35,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Butt kicks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Abdominales de mariposa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Silla eléctrica (Wall Sit)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Mountain Climbers rápidos",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 24,
+      "enfoque": "Fuerza y Resistencia Explosiva",
+      "ejercicios": [
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Sentadillas con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 40,
+            "40s_mas": 35
+          }
+        },
+        {
+          "nombre": "Abdominales de tijera",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 60,
+            "30s": 50,
+            "40s_mas": 40
+          }
+        },
+        {
+          "nombre": "Push-ups",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Sentadillas de prisionero con salto adelante y atrás",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Fondos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 25,
+      "enfoque": "Cardio y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes laterales",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Patadas de glúteos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Abdominales en bicicleta lentas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Superman back extension",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 30,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Saltos con cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "3 min",
+            "30s": "2:30 min",
+            "40s_mas": "2 min"
+          }
+        },
+        {
+          "nombre": "Desplantes de princesa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        }
+      ]
+    },
+    {
+      "dia": 26,
+      "enfoque": "Fuerza y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "High knees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Mountain Climbers",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "40 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Star Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Butt kicks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Plank comandos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 27,
+      "enfoque": "Resistencia y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Frog Pumps",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sumo squats",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Sentadillas búlgaras",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Abdominales tocando tobillos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "3 min",
+            "30s": "2:30 min",
+            "40s_mas": "2 min"
+          }
+        },
+        {
+          "nombre": "Wall sit",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 28,
+      "enfoque": "Cardio y Core",
+      "ejercicios": [
+        {
+          "nombre": "Lateral skater jump",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Mountain Climbers",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales Russian twist",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups con rodillazo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Sentadillas tocando talones",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plank Toe Touch",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 29,
+      "enfoque": "Full Body",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes con giro de torso",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas de prisionero con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Hollow rocks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales de mariposa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Lagartijas con toque de hombro",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas con saltos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Medio burpee",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 20,
+            "40s_mas": 20
+          }
+        }
+      ]
+    },
+    {
+      "dia": 30,
+      "enfoque": "Glúteos y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes de princesa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Puentes",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Sentadillas búlgaras",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Abdominales tocando tobillos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda (sin cuerda) con sentadillas",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "3 min",
+            "30s": "2:30 min",
+            "40s_mas": "2 min"
+          }
+        },
+        {
+          "nombre": "Wall sits",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Desplante Isometrico",
+          "nota": "Por lado",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 31,
+      "enfoque": "Fuerza y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Burpees con salto al techo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas con patadas",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Mountain Climbers cruzados",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "40 seg",
+            "30s": "30 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales en V",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Desplantes con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas abiertas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Golpes uppercuts",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "40 seg",
+            "30s": "30 seg",
+            "40s_mas": "25 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 32,
+      "enfoque": "Glúteos y Core",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes de princesa",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Push-ups en diamante",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Sentadillas sumo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Abdominales cruzados",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Saltos de rana",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Desplante isometrico",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Patadas de gluteo",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        }
+      ]
+    },
+    {
+      "dia": 33,
+      "enfoque": "Cardio y Fuerza",
+      "ejercicios": [
+        {
+          "nombre": "Burpees lado a lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "High Knees with punches",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Mountain Climbers",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Russian twist",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Lagartijas cerradas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda (sin cuerda)",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "3 min",
+            "30s": "2:30 min",
+            "40s_mas": "2 min"
+          }
+        },
+        {
+          "nombre": "Fondos en silla",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 34,
+      "enfoque": "Cardio y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes con giro de torso",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas con salto y toque de suelo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Abdominales de tijera",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Superman back extension",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Puente de gluteo isometrico",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        }
+      ]
+    },
+    {
+      "dia": 35,
+      "enfoque": "Full Body y Core",
+      "ejercicios": [
+        {
+          "nombre": "High knee punches",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Jumping jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Butt kicks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales patadas al cielo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Push-ups con rodillazo al pecho",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda (sin cuerda) con abdominales",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "4 min",
+            "30s": "3:30 min",
+            "40s_mas": "2 min"
+          }
+        },
+        {
+          "nombre": "Lateral skater jumps",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        }
+      ]
+    },
+    {
+      "dia": 36,
+      "enfoque": "Full Body y Fuerza",
+      "ejercicios": [
+        {
+          "nombre": "Golpes al aire",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 100,
+            "30s": 80,
+            "40s_mas": 60
+          }
+        },
+        {
+          "nombre": "Sentadillas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups diamantes",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Abdominales con elevación de pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Desplantes",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Mountain Climbers cruzados",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Fondos en silla",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Abdominales de mariposa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 35,
+            "30s": 30,
+            "40s_mas": 15
+          }
+        }
+      ]
+    },
+    {
+      "dia": 37,
+      "enfoque": "Cardio y Core",
+      "ejercicios": [
+        {
+          "nombre": "High knees punches",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 35,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Sentadillas sumo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Star Jumps",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups cerrados",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Desplantes de princesa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda imaginaria",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Russian Twist",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Plank Toe Touch",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 38,
+      "enfoque": "Glúteos, Piernas y Core",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes laterales",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas búlgaras",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Patadas de gluteo lateral",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 30,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Subidas a silla (Step ups)",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 20,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas en una pierna",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Golpes al aire (rectos)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 120,
+            "30s": 100,
+            "40s_mas": 80
+          }
+        }
+      ]
+    },
+    {
+      "dia": 39,
+      "enfoque": "Fuerza, Core y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Burpees con salto lateral",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas de lado a lado",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Abdominales tocando talones",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Hollow rocks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Sentadillas de prisionero",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Plank",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "45 seg",
+            "40s_mas": "30 seg"
+          }
+        },
+        {
+          "nombre": "Golpes al aire (uppercuts)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 120,
+            "30s": 100,
+            "40s_mas": 80
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 40,
+      "enfoque": "Full Body",
+      "ejercicios": [
+        {
+          "nombre": "Russian Twist",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 35,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Sentadillas con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Fondos en silla",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Abdominales de mariposas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Desplantes caminando",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Elevaciones de pantorrillas abiertas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 60,
+            "30s": 50,
+            "40s_mas": 40
+          }
+        },
+        {
+          "nombre": "Shoulder taps",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 60,
+            "30s": 50,
+            "40s_mas": 40
+          }
+        }
+      ]
+    },
+    {
+      "dia": 41,
+      "enfoque": "Core, Piernas y Glúteos",
+      "ejercicios": [
+        {
+          "nombre": "Desplantes de princesa",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Sentadillas búlgaras",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Plank jacks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "40 seg",
+            "30s": "30 seg",
+            "40s_mas": "20 seg"
+          }
+        },
+        {
+          "nombre": "Abdominales elevaciones piernas",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Step ups (silla)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Jumping Jacks",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Golpes al aire (rectos)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 150,
+            "30s": 120,
+            "40s_mas": 100
+          }
+        },
+        {
+          "nombre": "Plank Toe Touch",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 42,
+      "enfoque": "Fuerza y Cardio",
+      "ejercicios": [
+        {
+          "nombre": "Burpees con salto alto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 35,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Sentadillas sumo",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "High knees punches",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 60,
+            "30s": 50,
+            "40s_mas": 40
+          }
+        },
+        {
+          "nombre": "Abdominales Russian twist",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Desplantes de princesa",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Saltos a la cuerda",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 150,
+            "30s": 140,
+            "40s_mas": 130
+          }
+        },
+        {
+          "nombre": "Abdominales Russian twist (Serie 2)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Froggers",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 43,
+      "enfoque": "Piernas y Core",
+      "ejercicios": [
+        {
+          "nombre": "Sentadilla con salto sobre silla",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Desplantes laterales",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Push-ups de diamante",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Abdominales de estrella",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Plank jacks",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "45 seg",
+            "30s": "35 seg",
+            "40s_mas": "25 seg"
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Puente de glúteos a una pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 20,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        }
+      ]
+    },
+    {
+      "dia": 44,
+      "enfoque": "Fuerza Total",
+      "ejercicios": [
+        {
+          "nombre": "Burpees",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 35,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Shoulder taps",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups (piernas elevadas)",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 25,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Abdominales tocando talones",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 50,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Desplantes con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 35,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Step ups",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 40,
+            "30s": 30,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Correr en tu lugar",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1 min",
+            "30s": "1 min",
+            "40s_mas": "1 min"
+          }
+        },
+        {
+          "nombre": "Plank Comandos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 30,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        }
+      ]
+    },
+    {
+      "dia": 45,
+      "enfoque": "Cardio y Resistencia",
+      "ejercicios": [
+        {
+          "nombre": "Burpees laterales",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 30,
+            "40s_mas": 25
+          }
+        },
+        {
+          "nombre": "Sentadillas con salto",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Push-ups cerrados",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Abdominales de mariposa",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 40,
+            "40s_mas": 30
+          }
+        },
+        {
+          "nombre": "Desplantes",
+          "nota": "Por pierna",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 25,
+            "40s_mas": 20
+          }
+        },
+        {
+          "nombre": "Golpes rectos",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 150,
+            "30s": 140,
+            "40s_mas": 130
+          }
+        },
+        {
+          "nombre": "Lateral skaters jump",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 20,
+            "40s_mas": 15
+          }
+        },
+        {
+          "nombre": "Caminata del gusano",
+          "descanso": "30 seg",
+          "repeticiones": {
+            "20s": 45,
+            "30s": 15,
+            "40s_mas": 10
+          }
+        },
+        {
+          "nombre": "Plank",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "2 min",
+            "30s": "1:30 min",
+            "40s_mas": "1 min"
+          }
+        },
+        {
+          "nombre": "Wall Sit",
+          "tipo": "tiempo",
+          "descanso": "30 seg",
+          "duracion": {
+            "20s": "1:30 min",
+            "30s": "1 min",
+            "40s_mas": "45 seg"
+          }
+        }
+      ]
+    }
+  ]
+}
