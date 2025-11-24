@@ -13,7 +13,9 @@ class GeminiService {
     if (apiKey.isEmpty) {
       print("❌ ERROR: No se encontró GEMINI_API_KEY en el archivo .env");
     }
-    _model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+
+    // CAMBIO AQUÍ: Usamos 'gemini-1.5-flash' que es más rápido y actual.
+    _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   }
 
   // Carga los JSONs y prepara a la IA (Grounding)

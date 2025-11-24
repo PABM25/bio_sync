@@ -61,6 +61,11 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
+  assets:
+    - .env
+    - assets/data/reto45.json
+    - assets/data/plan-nutri.json
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -98,7 +103,3 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
 
-assets:
-  - assets/.env
-  - assets/data/reto45.json
-  - assets/data/plan-nutri.json
