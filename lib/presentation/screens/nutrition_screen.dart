@@ -70,15 +70,14 @@ class NutritionScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              // Tira de Calendario (Estática)
+              // Tira de Calendario
               SizedBox(
                 height: 80,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 7,
                   itemBuilder: (context, index) {
-                    final isActive =
-                        index == 3; // Simulamos que hoy es el activo
+                    final isActive = index == 3;
                     final days = [
                       'Lun',
                       'Mar',
@@ -236,22 +235,6 @@ class NutritionScreen extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                const SizedBox(height: 12),
-                // Dato simulado de calorías
-                Row(
-                  children: [
-                    Icon(
-                      Icons.local_fire_department,
-                      size: 16,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "~450 Kcal",
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                    ),
-                  ],
                 ),
               ],
             ),

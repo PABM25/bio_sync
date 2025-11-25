@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/models/workout_model.dart'; // Importamos el modelo Ejercicio
+import '../../data/models/workout_model.dart';
 import '../providers/data_provider.dart';
 
 class ExerciseScreen extends StatelessWidget {
@@ -15,7 +15,6 @@ class ExerciseScreen extends StatelessWidget {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // Obtenemos las listas de objetos 'Ejercicio'
     final destacados = rutina?.ejercicios.take(2).toList() ?? [];
     final restoEjercicios = rutina?.ejercicios.skip(2).toList() ?? [];
 
@@ -27,66 +26,12 @@ class ExerciseScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Buenos días,",
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      const Text(
-                        "Atleta BioSync",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Color(0xFF8B5CF6),
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Search Bar
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.search, color: Colors.grey),
-                    hintText: 'Buscar entrenamiento...',
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              // Destacados (Grid)
+              const SizedBox(height: 20),
               const Text(
-                "Destacados de Hoy",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                "Entrenamiento de Hoy",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16),
-
+              const SizedBox(height: 20),
               if (destacados.isNotEmpty)
                 GridView.builder(
                   shrinkWrap: true,
@@ -100,45 +45,31 @@ class ExerciseScreen extends StatelessWidget {
                   itemCount: destacados.length,
                   itemBuilder: (context, index) {
                     final ejercicio = destacados[index];
-                    // CORRECCIÓN: Usamos las propiedades del objeto en lugar de split()
                     return _buildWorkoutCard(
                       ejercicio.nombre,
-                      ejercicio.detalle, // Ej: "20 reps" o "30 seg"
+                      ejercicio.detalle,
                       index,
                     );
                   },
-                )
-              else
-                const Text("No hay rutina destacada para hoy."),
-
+                ),
               const SizedBox(height: 30),
-
-              // Lista Vertical
               const Text(
-                "Tu Plan Completo",
+                "Rutina Completa",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-
               if (restoEjercicios.isNotEmpty)
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: restoEjercicios.length,
                   itemBuilder: (context, index) {
-                    // CORRECCIÓN: Pasamos el objeto Ejercicio completo
                     return _buildExerciseListItem(
                       restoEjercicios[index],
                       index,
                     );
                   },
-                )
-              else
-                const Text(
-                  "No hay más ejercicios hoy.",
-                  style: TextStyle(color: Colors.grey),
                 ),
-
               const SizedBox(height: 80),
             ],
           ),
@@ -154,128 +85,47 @@ class ExerciseScreen extends StatelessWidget {
     final textColor = index % 2 == 0
         ? const Color(0xFF21005D)
         : const Color(0xFF381E72);
-
     return Container(
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -20,
-            bottom: -20,
-            child: Icon(
-              Icons.fitness_center,
-              size: 100,
-              color: Colors.white.withOpacity(0.3),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+              maxLines: 2,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.timer_outlined,
-                      size: 16,
-                      color: textColor.withOpacity(0.7),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        color: textColor.withOpacity(0.7),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+            Text(subtitle, style: TextStyle(color: textColor.withOpacity(0.7))),
+          ],
+        ),
       ),
     );
   }
 
-  // CORRECCIÓN: Ahora recibe un objeto 'Ejercicio' en lugar de 'String'
   Widget _buildExerciseListItem(Ejercicio ejercicio, int index) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(Icons.fitness_center, color: Color(0xFF8B5CF6)),
       ),
-      child: Row(
-        children: [
-          Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              Icons.sports_gymnastics,
-              color: const Color(0xFF8B5CF6).withOpacity(0.5),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  ejercicio.nombre,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Descanso: ${ejercicio.descanso} • ${ejercicio.detalle}",
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: const Icon(
-              Icons.play_arrow_rounded,
-              color: Color(0xFF8B5CF6),
-            ),
-          ),
-        ],
+      title: Text(
+        ejercicio.nombre,
+        style: TextStyle(fontWeight: FontWeight.bold),
       ),
+      subtitle: Text(ejercicio.detalle),
+      trailing: Icon(Icons.play_circle_fill, color: Color(0xFF8B5CF6)),
     );
   }
 }
