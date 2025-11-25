@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'presentation/providers/chat_provider.dart';
 import 'presentation/screens/onboarding_screen.dart'; // Importante
+import 'presentation/providers/data_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +15,11 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ChatProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
+        // AGREGAMOS EL NUEVO PROVIDER:
+        ChangeNotifierProvider(create: (_) => DataProvider()..loadData()),
+      ],
       child: const BioSyncApp(),
     ),
   );
