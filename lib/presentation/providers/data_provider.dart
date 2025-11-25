@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../data/models/workout_model.dart';
 import '../../data/models/diet_model.dart';
 
@@ -10,10 +13,13 @@ class DataProvider with ChangeNotifier {
   String userName = "Atleta";
   String userGoal = "Mantenerme Activo";
   String userLevel = "Intermedio";
-  int userAge = 30; // Nuevo campo Edad
+  int userAge = 30;
 
   // Progreso
   int currentDay = 1;
+
+  // --- NUEVO: HIDRATACIÓN ---
+  int waterGlasses = 0; // Meta de 8 vasos diarios
 
   // Datos cargados
   List<RutinaDia> _rutinaCompleta = [];
@@ -37,7 +43,6 @@ class DataProvider with ChangeNotifier {
     return _planNutricional.first;
   }
 
-  // Calcula la clave para el JSON: "20s", "30s" o "40s_mas"
   String get grupoEdadUsuario {
     if (userAge < 30) return "20s";
     if (userAge < 40) return "30s";
@@ -45,10 +50,9 @@ class DataProvider with ChangeNotifier {
   }
 
   Future<void> loadData() async {
-    await _loadPreferences(); // Cargar datos guardados del usuario
+    await _loadPreferences();
 
     try {
-      // Cargar JSONs
       final workoutString = await rootBundle.loadString(
         'assets/data/reto45.json',
       );
@@ -74,15 +78,40 @@ class DataProvider with ChangeNotifier {
     }
   }
 
-  // --- PERSISTENCIA ---
-
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    userName = prefs.getString('userName') ?? "Atleta";
-    userGoal = prefs.getString('userGoal') ?? "Mantenerme Activo";
-    userLevel = prefs.getString('userLevel') ?? "Intermedio";
-    userAge = prefs.getInt('userAge') ?? 30;
-    currentDay = prefs.getInt('currentDay') ?? 1;
+
+    // Sincronización con Firestore
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (doc.exists && doc.data() != null) {
+          final data = doc.data()!;
+          if (data.containsKey('currentDay')) {
+            currentDay = data['currentDay'];
+            await prefs.setInt('currentDay', currentDay);
+          }
+          if (data.containsKey('name')) userName = data['name'];
+          if (data.containsKey('age')) userAge = data['age'];
+        }
+      } catch (e) {
+        print("Error sync Firebase: $e");
+      }
+    }
+
+    // Carga local
+    userName = prefs.getString('userName') ?? userName;
+    userAge = prefs.getInt('userAge') ?? userAge;
+    currentDay = prefs.getInt('currentDay') ?? currentDay;
+
+    // Cargar agua (reseteo diario simple: si cambia el día, se puede reiniciar manualmente o con lógica de fecha)
+    // Por simplicidad, no guardamos fecha hoy, pero en una app real guardarías 'lastWaterDate'.
+    waterGlasses = prefs.getInt('waterGlasses') ?? 0;
+
     notifyListeners();
   }
 
@@ -106,20 +135,60 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // --- LÓGICA DE AGUA ---
+  void drinkWater() async {
+    if (waterGlasses < 8) {
+      waterGlasses++;
+      notifyListeners();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('waterGlasses', waterGlasses);
+    }
+  }
+
+  void resetWater() async {
+    waterGlasses = 0;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('waterGlasses', 0);
+  }
+  // ----------------------
+
   Future<void> completeDay() async {
     if (currentDay < 45) {
       currentDay++;
+
+      // Resetear agua al cambiar de día (opcional)
+      waterGlasses = 0;
+
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt('currentDay', currentDay);
+      await prefs.setInt('waterGlasses', 0);
+
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'currentDay': currentDay,
+        });
+      }
+
       notifyListeners();
     }
   }
 
-  // Para reiniciar progreso (útil para pruebas)
   Future<void> resetProgress() async {
     currentDay = 1;
+    waterGlasses = 0;
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('currentDay', 1);
+    await prefs.setInt('waterGlasses', 0);
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'currentDay': 1,
+      });
+    }
     notifyListeners();
   }
 }

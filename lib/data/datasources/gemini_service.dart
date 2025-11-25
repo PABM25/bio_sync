@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -7,75 +6,68 @@ class GeminiService {
   ChatSession? _chat;
   bool _isInitialized = false;
 
-  // Inicializa el modelo con la API KEY del .env
   GeminiService() {
     final apiKey = dotenv.env['GEMINI_API_KEY'] ?? "";
     if (apiKey.isEmpty) {
       print("❌ ERROR: No se encontró GEMINI_API_KEY en el archivo .env");
     }
-
-    // CAMBIO AQUÍ: Usamos 'gemini-1.5-flash' que es más rápido y actual.
+    // Usamos gemini-1.5-flash por velocidad y costo
     _model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
   }
 
-  // Carga los JSONs y prepara a la IA (Grounding)
+  // Inicialización ligera: Solo define la personalidad, NO carga todos los datos aún
   Future<void> initializeContext() async {
     if (_isInitialized) return;
 
     try {
-      // 1. Leemos tus archivos locales
-      final rutinas = await rootBundle.loadString('assets/data/reto45.json');
-      final nutricion = await rootBundle.loadString(
-        'assets/data/plan-nutri.json',
-      );
-
-      // 2. Creamos el "Prompt del Sistema" para darle personalidad
-      final contextData =
-          """
-      Actúa como FitAI, el entrenador personal de la app BioSync.
-      
-      Tus instrucciones principales son:
-      1. Basa tus recomendaciones EXCLUSIVAMENTE en los siguientes planes JSON.
-      2. Si te preguntan por ejercicios, busca en el 'PLAN DE ENTRENAMIENTO'.
-      3. Si te preguntan por comida, busca en el 'PLAN NUTRICIONAL'.
-      4. Si la pregunta no está en los planes, da un consejo general breve y aclara que no está en tu base de datos.
-      5. Sé motivador, energético y breve.
-
-      --- PLAN DE ENTRENAMIENTO ---
-      $rutinas
-      
-      --- PLAN NUTRICIONAL ---
-      $nutricion
+      final systemPrompt = """
+      Eres FitAI, el entrenador personal virtual de la app BioSync.
+      Tu tono es motivador, energético, breve y directo.
+      Responderás preguntas sobre rutinas de ejercicio y nutrición basándote en el contexto que se te proveerá en cada mensaje.
+      Si no tienes información sobre algo específico en el contexto proporcionado, ofrece un consejo general pero aclara que no está en el plan específico.
       """;
 
-      // 3. Iniciamos el chat con este conocimiento
       _chat = _model.startChat(
         history: [
-          Content.text(contextData),
+          Content.text(systemPrompt),
           Content.model([
             TextPart(
-              "¡Entendido! Soy FitAI. Conozco el Reto de 45 días y el plan nutricional al detalle. ¿En qué puedo ayudarte hoy?",
+              "¡Entendido! Soy FitAI, listo para ayudar. ¿Cuál es el estado actual del usuario?",
             ),
           ]),
         ],
       );
 
       _isInitialized = true;
-      print("✅ FitAI Inicializado con contexto");
+      print("✅ FitAI Inicializado (Modo Optimizado)");
     } catch (e) {
       print("❌ Error cargando contexto de IA: $e");
     }
   }
 
-  // Enviar mensaje del usuario
-  Future<String> sendMessage(String message) async {
+  // Enviamos mensaje + contexto del día específico (Inyección Dinámica)
+  Future<String> sendMessage(String message, {String? dailyContext}) async {
     if (_chat == null) await initializeContext();
 
     try {
-      final response = await _chat!.sendMessage(Content.text(message));
+      // Construimos un prompt combinado
+      String finalPrompt = message;
+
+      if (dailyContext != null && dailyContext.isNotEmpty) {
+        finalPrompt =
+            """
+        [CONTEXTO ACTUAL DEL USUARIO]
+        $dailyContext
+        -----------------------------
+        [PREGUNTA DEL USUARIO]
+        $message
+        """;
+      }
+
+      final response = await _chat!.sendMessage(Content.text(finalPrompt));
       return response.text ?? "No pude generar una respuesta.";
     } catch (e) {
-      return "Error de conexión con FitAI. Verifica tu internet o API Key. ($e)";
+      return "Error de conexión con FitAI. Verifica tu internet. ($e)";
     }
   }
 }

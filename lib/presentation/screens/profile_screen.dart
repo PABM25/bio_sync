@@ -4,6 +4,7 @@ import '../providers/auth_provider.dart';
 import '../providers/data_provider.dart';
 import '../../data/models/user.model.dart';
 import 'auth/login_screen.dart';
+import '../widgets/weight_chart.dart'; // <--- Importante
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,17 +35,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     setState(() {
       if (user != null) {
-        // Datos de Firebase
         _nameController.text = user.name;
         _weightController.text = user.weight.toString();
         _heightController.text = user.height.toString();
         _ageController.text = user.age.toString();
         _selectedGoal = user.goal;
       } else {
-        // Datos Locales (Fallback)
         _nameController.text = dataProvider.userName;
         _ageController.text = dataProvider.userAge.toString();
-        _weightController.text = "70.0"; // Valores por defecto si falla todo
+        _weightController.text = "70.0";
         _heightController.text = "170.0";
       }
     });
@@ -110,13 +109,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildField("Altura (cm)", _heightController, Icons.height, true),
             const SizedBox(height: 24),
 
-            // Selector de Meta
             DropdownButtonFormField<String>(
               value:
                   [
                     "Perder Peso",
                     "Ganar Músculo",
-                    "Mantenerme Activo",
                     "Mantenerme",
                   ].contains(_selectedGoal)
                   ? _selectedGoal
@@ -124,7 +121,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               items: [
                 "Perder Peso",
                 "Ganar Músculo",
-                "Mantenerme Activo",
                 "Mantenerme",
               ].map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
               onChanged: _isEditing
@@ -140,6 +136,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
+            const SizedBox(height: 30),
+
+            // --- TARJETA DE CALORÍAS (Ya implementada) ---
+            if (authProvider.userProfile != null)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xFF8B5CF6).withOpacity(0.1),
+                      Colors.white,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFF8B5CF6).withOpacity(0.3),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.local_fire_department, color: Colors.orange),
+                        SizedBox(width: 8),
+                        Text(
+                          "Tu Meta Diaria Calculada",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "${authProvider.userProfile!.dailyCalories} Kcal",
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF8B5CF6),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      "Basado en tu edad, medidas y objetivo.",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+
+            // --- NUEVO: GRÁFICO DE PESO ---
+            const SizedBox(height: 30),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Tu Progreso (Estimado)",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 15),
+            WeightChart(
+              weightHistory: [
+                // Simulamos datos históricos para ver el gráfico
+                (authProvider.userProfile?.weight ?? 70) + 2.5,
+                (authProvider.userProfile?.weight ?? 70) + 1.5,
+                (authProvider.userProfile?.weight ?? 70) + 0.5,
+                (authProvider.userProfile?.weight ?? 70),
+              ],
+            ),
+
+            // -------------------------------------------
             const SizedBox(height: 40),
             if (_isLoading) const CircularProgressIndicator(),
 
@@ -148,20 +222,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: OutlinedButton.icon(
                 onPressed: () async {
                   await authProvider.logout();
-                  if (mounted)
+                  if (mounted) {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                       (r) => false,
                     );
+                  }
                 },
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: const Text(
                   "Cerrar Sesión",
                   style: TextStyle(color: Colors.red),
                 ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.red),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -204,10 +284,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         gender: auth.userProfile?.gender ?? "Otro",
         goal: _selectedGoal,
         level: auth.userProfile?.level ?? "Intermedio",
+        currentDay: auth.userProfile?.currentDay ?? 1,
       );
 
       await auth.saveUserProfile(newProfile);
-      // Actualizamos también el data provider local
       data.setUserData(
         newProfile.name,
         newProfile.goal,
@@ -216,9 +296,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       setState(() => _isLoading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Perfil actualizado")));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Perfil actualizado")));
+      }
     }
     setState(() => _isEditing = !_isEditing);
   }

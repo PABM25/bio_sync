@@ -1,23 +1,23 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/data_provider.dart'; // Importamos el cerebro de datos
+import '../providers/data_provider.dart';
+import '../widgets/daily_summary_card.dart'; // Asegúrate de tener este widget creado
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 1. Obtenemos los datos del Provider
     final data = Provider.of<DataProvider>(context);
-    final rutina = data.rutinaHoy; // La rutina específica del día actual
+    final rutina = data.rutinaHoy;
+
+    // Cálculo del porcentaje (asegurando que no pase de 1.0)
+    double progress = (data.currentDay / 45).clamp(0.0, 1.0);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
       body: data.isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            ) // Si está cargando, muestra círculo
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -25,7 +25,6 @@ class DashboardScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 40),
 
-                  // 2. Saludo Personalizado con el nombre real
                   Text(
                     "Hola, ${data.userName} 👋",
                     style: const TextStyle(
@@ -33,68 +32,49 @@ class DashboardScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    "Día ${data.currentDay} del Reto 45",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF8B5CF6),
-                      fontWeight: FontWeight.bold,
+
+                  // Texto del día
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Día ${data.currentDay} del Reto 45",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF8B5CF6),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "${(progress * 100).toStringAsFixed(0)}%",
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // --- MEJORA 4: BARRA DE PROGRESO ---
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 12,
+                      backgroundColor: Colors.grey[300],
+                      color: const Color(0xFF8B5CF6),
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  // -----------------------------------
+                  const SizedBox(height: 25),
 
-                  // 3. Tarjeta Principal: Muestra el enfoque de hoy (ej: "Cardio y Pierna")
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF8B5CF6).withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Hoy te toca:",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                        const SizedBox(height: 5),
-                        // Aquí mostramos el "enfoque" del JSON
-                        Text(
-                          rutina?.enfoque ?? "Descanso / Fin del Reto",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.timer,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              "${rutina?.ejercicios.length ?? 0} Ejercicios",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  // Tarjeta Resumen (Widget separado)
+                  DailySummaryCard(
+                    enfoque: rutina?.enfoque ?? "Descanso / Fin del Reto",
+                    cantidadEjercicios: rutina?.ejercicios.length ?? 0,
                   ),
 
                   const SizedBox(height: 25),
@@ -104,34 +84,33 @@ class DashboardScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  // 4. Lista Dinámica: Genera una tarjeta por cada ejercicio en el JSON
                   if (rutina != null)
                     ...rutina.ejercicios.map(
                       (ejercicio) => _buildExerciseItem(
                         ejercicio.nombre,
                         ejercicio.descanso,
-                        ejercicio.getDetalleParaUsuario(
-                          data.grupoEdadUsuario,
-                        ), // "20 reps" o "1 min"
+                        ejercicio.getDetalleParaUsuario(data.grupoEdadUsuario),
                       ),
                     )
                   else
                     const Center(
-                      child: Text("¡Felicidades! Has completado el reto."),
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Text("¡Felicidades! Has completado el reto."),
+                      ),
                     ),
 
-                  // 5. Botón para avanzar al siguiente día
+                  const SizedBox(height: 20),
+
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Llama a la lógica para sumar un día
                         data.completeDay();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text(
-                              "¡Día completado! Mañana más fuerte 💪",
-                            ),
+                            content: Text("¡Día completado! Sigue así 💪"),
+                            backgroundColor: Colors.green,
                           ),
                         );
                       },
@@ -153,7 +132,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Widget auxiliar para dibujar cada fila de ejercicio
   Widget _buildExerciseItem(String name, String descanso, String detalle) {
     return Card(
       elevation: 0,

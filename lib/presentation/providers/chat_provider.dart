@@ -20,32 +20,31 @@ class ChatProvider with ChangeNotifier {
   }
 
   Future<void> _initAI() async {
-    // Inicializa la IA leyendo los archivos
     await _geminiService.initializeContext();
-
-    // Mensaje de bienvenida
     _messages.add(
       ChatMessage(
         text:
-            "¡Hola! Soy FitAI 💪. Conozco tu plan de nutrición y tu reto de 45 días. ¿En qué te ayudo?",
+            "¡Hola! Soy FitAI 💪. Pregúntame sobre tu rutina de hoy o tu plan de comidas.",
         isUser: false,
       ),
     );
     notifyListeners();
   }
 
-  Future<void> sendMessage(String text) async {
+  // Aceptamos un contexto opcional aquí
+  Future<void> sendMessage(String text, {String? contextData}) async {
     if (text.trim().isEmpty) return;
 
-    // 1. Agrega mensaje del usuario
     _messages.add(ChatMessage(text: text, isUser: true));
     _isLoading = true;
     notifyListeners();
 
-    // 2. Pide respuesta a la IA
-    final response = await _geminiService.sendMessage(text);
+    // Pasamos el contextoData al servicio
+    final response = await _geminiService.sendMessage(
+      text,
+      dailyContext: contextData,
+    );
 
-    // 3. Agrega respuesta de la IA
     _messages.add(ChatMessage(text: response, isUser: false));
     _isLoading = false;
     notifyListeners();

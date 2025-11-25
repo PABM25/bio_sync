@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/chat_provider.dart';
+import '../../providers/data_provider.dart'; // Importamos DataProvider
 
 class ChatScreen extends StatelessWidget {
-  // Controlador para el campo de texto
   final TextEditingController _controller = TextEditingController();
 
   ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Escuchamos los cambios del Provider (mensajes nuevos, estado de carga)
     final chatProvider = Provider.of<ChatProvider>(context);
+    // Obtenemos acceso a los datos pero SIN escuchar cambios (listen: false) para no reconstruir toda la pantalla
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -19,22 +20,20 @@ class ChatScreen extends StatelessWidget {
           "FitAI Entrenador",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: const Color(0xFF8B5CF6), // Morado principal
+        backgroundColor: const Color(0xFF8B5CF6),
         elevation: 0,
       ),
       body: Container(
-        // Fondo con gradiente suave
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [Color(0xFF8B5CF6), Colors.white],
-            stops: [0.0, 0.3], // El morado solo ocupa la parte superior
+            stops: [0.0, 0.3],
           ),
         ),
         child: Column(
           children: [
-            // LISTA DE MENSAJES
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
@@ -45,21 +44,17 @@ class ChatScreen extends StatelessWidget {
                 },
               ),
             ),
-
-            // INDICADOR DE "ESCRIBIENDO..."
             if (chatProvider.isLoading)
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "FitAI está pensando...",
+                  "FitAI está analizando tu plan...",
                   style: TextStyle(
                     color: Colors.grey,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
-
-            // CAMPO DE TEXTO (INPUT)
             Container(
               padding: const EdgeInsets.all(16.0),
               color: Colors.white,
@@ -69,7 +64,7 @@ class ChatScreen extends StatelessWidget {
                     child: TextField(
                       controller: _controller,
                       decoration: InputDecoration(
-                        hintText: "Pregunta sobre tu rutina...",
+                        hintText: "Ej: ¿Cómo hago las sentadillas?",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -80,8 +75,8 @@ class ChatScreen extends StatelessWidget {
                         filled: true,
                         fillColor: Colors.grey[100],
                       ),
-                      // Enviar al presionar Enter en teclado
-                      onSubmitted: (_) => _sendMessage(context, chatProvider),
+                      onSubmitted: (_) =>
+                          _sendMessage(context, chatProvider, dataProvider),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -89,7 +84,8 @@ class ChatScreen extends StatelessWidget {
                     mini: true,
                     backgroundColor: const Color(0xFF8B5CF6),
                     child: const Icon(Icons.send, color: Colors.white),
-                    onPressed: () => _sendMessage(context, chatProvider),
+                    onPressed: () =>
+                        _sendMessage(context, chatProvider, dataProvider),
                   ),
                 ],
               ),
@@ -100,20 +96,39 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
-  void _sendMessage(BuildContext context, ChatProvider provider) {
+  void _sendMessage(
+    BuildContext context,
+    ChatProvider chat,
+    DataProvider data,
+  ) {
     if (_controller.text.trim().isNotEmpty) {
-      provider.sendMessage(_controller.text);
+      // Preparamos el contexto del día actual para la IA
+      final rutina = data.rutinaHoy;
+      final dieta = data.dietaHoy;
+
+      String contextInfo =
+          """
+      Datos del Usuario:
+      - Nombre: ${data.userName}
+      - Nivel: ${data.userLevel}
+      - Día del Reto: ${data.currentDay}
+      
+      Rutina de Hoy (Enfoque: ${rutina?.enfoque ?? 'Descanso'}):
+      ${rutina?.ejercicios.map((e) => "- ${e.nombre} (${e.descanso})").join('\n') ?? 'Descanso'}
+      
+      Comidas de Hoy:
+      - Desayuno: ${dieta?.comidas.desayuno ?? 'N/A'}
+      - Almuerzo: ${dieta?.comidas.almuerzo ?? 'N/A'}
+      """;
+
+      chat.sendMessage(_controller.text, contextData: contextInfo);
       _controller.clear();
-      // Ocultar teclado si lo deseas:
-      // FocusScope.of(context).unfocus();
     }
   }
 }
 
-// Widget pequeño para las burbujas de chat
 class _MessageBubble extends StatelessWidget {
   final ChatMessage message;
-
   const _MessageBubble({required this.message});
 
   @override
