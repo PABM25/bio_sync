@@ -10,20 +10,20 @@ class AuthProvider with ChangeNotifier {
   User? _firebaseUser;
   UserProfile? _userProfile;
   bool _isLoading = false;
+  String? _errorMessage; // Nueva variable para guardar errores
 
   User? get user => _firebaseUser;
   UserProfile? get userProfile => _userProfile;
   bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage; // Getter que buscaba la pantalla
 
   AuthProvider() {
-    // Escuchar cambios en la sesión (si cierra o abre la app)
     _auth.authStateChanges().listen(_onAuthStateChanged);
   }
 
   Future<void> _onAuthStateChanged(User? firebaseUser) async {
     _firebaseUser = firebaseUser;
     if (firebaseUser != null) {
-      // Si hay usuario, traemos sus datos de Firestore
       await _fetchUserProfile();
     } else {
       _userProfile = null;
@@ -31,40 +31,52 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Iniciar sesión con Email
-  Future<String?> login(String email, String password) async {
+  // MODIFICADO: Ahora devuelve Future<bool>
+  Future<bool> login(String email, String password) async {
+    _isLoading = true;
+    _errorMessage = null; // Limpiamos errores previos
+    notifyListeners();
+
     try {
-      _isLoading = true;
-      notifyListeners();
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return null; // null significa éxito
+      // Si no da error, asumimos éxito
+      return true;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      _errorMessage = e.message ?? "Error desconocido";
+      return false; // Falló
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  // Registrarse con Email
-  Future<String?> register(String email, String password) async {
+  // MODIFICADO: Ahora devuelve Future<bool>
+  Future<bool> register(String email, String password) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
     try {
-      _isLoading = true;
-      notifyListeners();
       await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return null;
+      return true;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      _errorMessage = e.message ?? "Error al registrarse";
+      return false;
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  // Guardar datos del perfil (Peso, Altura, etc)
   Future<void> saveUserProfile(UserProfile profile) async {
     try {
       await _db.collection('users').doc(profile.id).set(profile.toMap());
@@ -75,7 +87,6 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Leer datos del perfil
   Future<void> _fetchUserProfile() async {
     if (_firebaseUser == null) return;
     try {

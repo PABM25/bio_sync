@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../onboarding_screen.dart'; // Si es registro nuevo
-import '../main_layout.dart'; // Si ya tiene cuenta
+import '../main_layout.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,145 +12,226 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  bool _isLogin = true; // Alternar entre Login y Registro
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.fitness_center, size: 80, color: Colors.white),
-                const SizedBox(height: 20),
-                Text(
-                  _isLogin ? "Bienvenido de nuevo" : "Crea tu cuenta",
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 40),
+              // Títulos
+              const Text(
+                "¡Hola de nuevo!",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                "Ingresa para continuar en BioSync",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 40),
+
+              // Campo de Email
+              _buildModernTextField(
+                controller: _emailController,
+                hintText: 'Correo electrónico',
+                icon: Icons.email_outlined,
+              ),
+              const SizedBox(height: 16),
+
+              // Campo de Contraseña
+              _buildModernTextField(
+                controller: _passwordController,
+                hintText: 'Contraseña',
+                icon: Icons.lock_outline,
+                isPassword: true,
+              ),
+
+              // Olvidé mi contraseña
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    // TODO: Implementar recuperación de contraseña
+                  },
+                  child: const Text(
+                    "¿Olvidaste tu contraseña?",
+                    style: TextStyle(color: Color(0xFF8B5CF6)),
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Tu transformación empieza aquí",
-                  style: TextStyle(color: Colors.white70),
+              ),
+              const SizedBox(height: 24),
+
+              // Mensaje de error si existe
+              if (authProvider.errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(
+                    authProvider.errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 ),
-                const SizedBox(height: 40),
 
-                // Formulario
-                _buildTextField(
-                  Icons.email,
-                  "Correo Electrónico",
-                  _emailCtrl,
-                  false,
+              // Botón de Login Grande
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: authProvider.isLoading
+                      ? null
+                      : () async {
+                          final success = await authProvider.login(
+                            _emailController.text.trim(),
+                            _passwordController.text.trim(),
+                          );
+                          if (success && mounted) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MainLayout(),
+                              ),
+                            );
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8B5CF6),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 2,
+                  ),
+                  child: authProvider.isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Iniciar Sesión",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
-                const SizedBox(height: 16),
-                _buildTextField(Icons.lock, "Contraseña", _passCtrl, true),
+              ),
+              const SizedBox(height: 30),
 
-                const SizedBox(height: 30),
+              // Divisor "O continúa con"
+              const Row(
+                children: [
+                  Expanded(child: Divider()),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      "O continúa con",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 24),
 
-                // Botón Principal
-                if (auth.isLoading)
-                  const CircularProgressIndicator(color: Colors.white)
-                else
-                  ElevatedButton(
-                    onPressed: () => _submit(auth),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF8B5CF6),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+              // Botones Sociales (Placeholder visual)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _socialButton(
+                    Icons.g_mobiledata,
+                    Colors.red,
+                  ), // Google placeholder
+                  _socialButton(Icons.apple, Colors.black), // Apple placeholder
+                  _socialButton(
+                    Icons.facebook,
+                    Colors.blue,
+                  ), // Facebook placeholder
+                ],
+              ),
+              const SizedBox(height: 40),
+
+              // Enlace a Registro
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "¿No tienes cuenta? ",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Regístrate ahora",
+                      style: TextStyle(
+                        color: Color(0xFF8B5CF6),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    child: Text(_isLogin ? "INICIAR SESIÓN" : "REGISTRARSE"),
                   ),
-
-                const SizedBox(height: 20),
-
-                // Switch Login/Registro
-                TextButton(
-                  onPressed: () => setState(() => _isLogin = !_isLogin),
-                  child: Text(
-                    _isLogin
-                        ? "¿No tienes cuenta? Regístrate"
-                        : "¿Ya tienes cuenta? Inicia sesión",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTextField(
-    IconData icon,
-    String hint,
-    TextEditingController ctrl,
-    bool obscure,
-  ) {
-    return TextField(
-      controller: ctrl,
-      obscureText: obscure,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.white70),
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white60),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.2),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+  // Widget auxiliar para los campos de texto modernos
+  Widget _buildModernTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool isPassword = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: isPassword,
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.grey[500]),
+          prefixIcon: Icon(icon, color: Colors.grey[500]),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 16,
+          ),
         ),
       ),
-      style: const TextStyle(color: Colors.white),
     );
   }
 
-  Future<void> _submit(AuthProvider auth) async {
-    final email = _emailCtrl.text.trim();
-    final pass = _passCtrl.text.trim();
-
-    if (email.isEmpty || pass.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Revisa tus datos (Pass min 6 caracteres)"),
-        ),
-      );
-      return;
-    }
-
-    String? error;
-    if (_isLogin) {
-      error = await auth.login(email, pass);
-      // Si login es exitoso, el listener en main.dart manejará la navegación
-    } else {
-      error = await auth.register(email, pass);
-      // Si registro es exitoso, igual se loguea y va al main
-    }
-
-    if (error != null && mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error)));
-    }
+  // Widget auxiliar para botones sociales
+  Widget _socialButton(IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Icon(icon, color: color, size: 32),
+    );
   }
 }
