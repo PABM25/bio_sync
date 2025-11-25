@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'main_layout.dart';
+import '../../data/models/user.model.dart'; // Asegúrate que la ruta sea correcta
+import '../providers/auth_provider.dart';
 import '../providers/data_provider.dart';
+import 'main_layout.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -13,18 +15,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _page = 0;
 
+  // Controladores
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController(); // Nuevo
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
 
   String _selectedGoal = "Perder Peso";
   String _selectedLevel = "Intermedio";
+  bool _isSaving = false; // Para evitar doble clic
 
   @override
   Widget build(BuildContext context) {
-    // Lista de páginas
+    // Definimos las páginas según tus imágenes
     final List<Widget> pages = [
       _buildNamePage(),
-      _buildAgePage(), // Nueva página de edad
+      _buildAgePage(),
+      _buildWeightHeightPage(), // Página combinada o separada
       _buildGoalPage(),
       _buildLevelPage(),
     ];
@@ -44,12 +51,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Expanded(
                 child: PageView(
                   controller: _pageController,
+                  physics:
+                      const NeverScrollableScrollPhysics(), // Bloqueamos swipe manual para obligar a usar botón
                   onPageChanged: (p) => setState(() => _page = p),
                   children: pages,
                 ),
               ),
 
-              // Indicadores de página (Puntos)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
@@ -67,7 +75,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Botón
               Padding(
                 padding: const EdgeInsets.all(30),
                 child: ElevatedButton(
@@ -79,20 +86,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  onPressed: () {
-                    if (_page < pages.length - 1) {
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    } else {
-                      _finishOnboarding();
-                    }
-                  },
-                  child: Text(
-                    _page == pages.length - 1 ? "COMENZAR" : "CONTINUAR",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  onPressed: _isSaving
+                      ? null
+                      : () {
+                          if (_page < pages.length - 1) {
+                            _pageController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.ease,
+                            );
+                          } else {
+                            _finishOnboarding();
+                          }
+                        },
+                  child: _isSaving
+                      ? const CircularProgressIndicator()
+                      : Text(
+                          _page == pages.length - 1 ? "COMENZAR" : "CONTINUAR",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                 ),
               ),
             ],
@@ -102,27 +113,62 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  void _finishOnboarding() {
-    final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    String name = _nameController.text.trim().isEmpty
-        ? "Atleta"
-        : _nameController.text.trim();
-    int age = int.tryParse(_ageController.text) ?? 30; // Edad por defecto 30
+  Future<void> _finishOnboarding() async {
+    setState(() => _isSaving = true);
 
-    dataProvider.setUserData(name, _selectedGoal, _selectedLevel, age);
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final dataProvider = Provider.of<DataProvider>(context, listen: false);
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const MainLayout()),
-    );
+      // Recolectar datos
+      String name = _nameController.text.trim().isEmpty
+          ? "Atleta"
+          : _nameController.text.trim();
+      int age = int.tryParse(_ageController.text) ?? 30;
+      double weight = double.tryParse(_weightController.text) ?? 70.0;
+      double height = double.tryParse(_heightController.text) ?? 170.0;
+
+      // 1. Crear Objeto Perfil
+      final newProfile = UserProfile(
+        id: authProvider.user?.uid ?? '',
+        email: authProvider.user?.email ?? '',
+        name: name,
+        age: age,
+        weight: weight,
+        height: height,
+        gender: "Otro", // Puedes agregar pantalla de género si quieres
+        goal: _selectedGoal,
+        level: _selectedLevel,
+      );
+
+      // 2. Guardar en Firebase (Esto desbloquea el MainLayout en AuthWrapper)
+      await authProvider.saveUserProfile(newProfile);
+
+      // 3. Guardar en Local (Para uso rápido en ejercicios)
+      await dataProvider.setUserData(name, _selectedGoal, _selectedLevel, age);
+
+      // Navegar al MainLayout
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const MainLayout()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error al guardar: $e")));
+      setState(() => _isSaving = false);
+    }
   }
 
-  // --- PÁGINAS ---
+  // --- Widgets de las Páginas ---
 
   Widget _buildNamePage() {
     return _buildPageBase(
-      icon: Icons.fitness_center,
-      title: "Bienvenido a BioSync",
+      icon: Icons.person,
+      title: "Bienvenido",
       subtitle: "¿Cómo te llamas?",
       child: TextField(
         controller: _nameController,
@@ -131,28 +177,50 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  // NUEVA PÁGINA DE EDAD
   Widget _buildAgePage() {
     return _buildPageBase(
       icon: Icons.cake,
-      title: "Tu Edad",
-      subtitle: "Para personalizar tu plan",
+      title: "¿Cuántos años tienes?",
+      subtitle: "Para adaptar tus ejercicios",
       child: TextField(
         controller: _ageController,
         keyboardType: TextInputType.number,
-        decoration: _inputDecor("Ej: 28"),
+        decoration: _inputDecor("Ej: 25"),
+      ),
+    );
+  }
+
+  Widget _buildWeightHeightPage() {
+    return _buildPageBase(
+      icon: Icons.monitor_weight,
+      title: "Medidas Corporales",
+      subtitle: "Para calcular tus calorías",
+      child: Column(
+        children: [
+          TextField(
+            controller: _weightController,
+            keyboardType: TextInputType.number,
+            decoration: _inputDecor("Peso (kg)"),
+          ),
+          const SizedBox(height: 15),
+          TextField(
+            controller: _heightController,
+            keyboardType: TextInputType.number,
+            decoration: _inputDecor("Altura (cm)"),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildGoalPage() {
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            "Define tu Meta",
+            "Tu Objetivo",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -160,20 +228,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           const SizedBox(height: 30),
-          _buildSelectableOption(
+          _option(
             "Perder Peso",
             Icons.trending_down,
             _selectedGoal,
             (v) => setState(() => _selectedGoal = v),
           ),
-          _buildSelectableOption(
+          _option(
             "Ganar Músculo",
             Icons.fitness_center,
             _selectedGoal,
             (v) => setState(() => _selectedGoal = v),
           ),
-          _buildSelectableOption(
-            "Mantenerme Activo",
+          _option(
+            "Mantenerme",
             Icons.favorite,
             _selectedGoal,
             (v) => setState(() => _selectedGoal = v),
@@ -185,12 +253,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildLevelPage() {
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            "Tu Nivel",
+            "Nivel de Actividad",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -198,19 +266,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           const SizedBox(height: 30),
-          _buildSelectableOption(
+          _option(
             "Principiante",
             Icons.star_border,
             _selectedLevel,
             (v) => setState(() => _selectedLevel = v),
           ),
-          _buildSelectableOption(
+          _option(
             "Intermedio",
             Icons.star_half,
             _selectedLevel,
             (v) => setState(() => _selectedLevel = v),
           ),
-          _buildSelectableOption(
+          _option(
             "Avanzado",
             Icons.star,
             _selectedLevel,
@@ -221,7 +289,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  // Helpers de UI
   Widget _buildPageBase({
     required IconData icon,
     required String title,
@@ -261,7 +328,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       filled: true,
       fillColor: Colors.white,
       hintText: hint,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
@@ -269,13 +335,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _buildSelectableOption(
+  Widget _option(
     String title,
     IconData icon,
     String groupValue,
     Function(String) onTap,
   ) {
-    bool isSelected = title == groupValue;
+    bool selected = title == groupValue;
     return GestureDetector(
       onTap: () => onTap(title),
       child: Container(
@@ -284,28 +350,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
-          border: isSelected
+          border: selected
               ? Border.all(color: const Color(0xFF8B5CF6), width: 3)
               : null,
         ),
         child: Row(
           children: [
-            Icon(
-              icon,
-              color: isSelected ? const Color(0xFF8B5CF6) : Colors.grey,
-            ),
+            Icon(icon, color: selected ? const Color(0xFF8B5CF6) : Colors.grey),
             const SizedBox(width: 15),
             Text(
               title,
               style: TextStyle(
-                fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: isSelected ? const Color(0xFF8B5CF6) : Colors.black87,
+                color: selected ? const Color(0xFF8B5CF6) : Colors.black87,
               ),
             ),
-            const Spacer(),
-            if (isSelected)
-              const Icon(Icons.check_circle, color: Color(0xFF8B5CF6)),
           ],
         ),
       ),

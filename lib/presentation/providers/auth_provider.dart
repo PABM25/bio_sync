@@ -5,102 +5,120 @@ import '../../data/models/user.model.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  User? _firebaseUser;
+  User? _user;
   UserProfile? _userProfile;
-  bool _isLoading = false;
-  String? _errorMessage; // Nueva variable para guardar errores
+  bool _isLoading = true;
 
-  User? get user => _firebaseUser;
+  User? get user => _user;
   UserProfile? get userProfile => _userProfile;
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage; // Getter que buscaba la pantalla
+
+  // Verifica si debemos mostrar Onboarding o Main
+  bool get hasCompletedOnboarding => _userProfile != null;
 
   AuthProvider() {
-    _auth.authStateChanges().listen(_onAuthStateChanged);
+    _initAuth();
   }
 
-  Future<void> _onAuthStateChanged(User? firebaseUser) async {
-    _firebaseUser = firebaseUser;
-    if (firebaseUser != null) {
-      await _fetchUserProfile();
-    } else {
-      _userProfile = null;
-    }
-    notifyListeners();
-  }
-
-  // MODIFICADO: Ahora devuelve Future<bool>
-  Future<bool> login(String email, String password) async {
-    _isLoading = true;
-    _errorMessage = null; // Limpiamos errores previos
-    notifyListeners();
-
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      // Si no da error, asumimos éxito
-      return true;
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message ?? "Error desconocido";
-      return false; // Falló
-    } catch (e) {
-      _errorMessage = e.toString();
-      return false;
-    } finally {
+  void _initAuth() {
+    _auth.authStateChanges().listen((User? user) async {
+      _user = user;
+      if (user != null) {
+        // Si hay usuario, intentamos bajar su perfil de Firestore
+        await fetchUserProfile();
+      } else {
+        _userProfile = null;
+      }
       _isLoading = false;
       notifyListeners();
+    });
+  }
+
+  // Obtener datos de Firestore
+  Future<void> fetchUserProfile() async {
+    if (_user == null) return;
+    try {
+      final doc = await _firestore.collection('users').doc(_user!.uid).get();
+      if (doc.exists) {
+        _userProfile = UserProfile.fromMap(doc.data()!);
+      } else {
+        _userProfile =
+            null; // Usuario existe en Auth pero no tiene datos (Nuevo)
+      }
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching profile: $e");
     }
   }
 
-  // MODIFICADO: Ahora devuelve Future<bool>
-  Future<bool> register(String email, String password) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
+  // Login
+  Future<String?> login(String email, String password) async {
     try {
+      _isLoading = true;
+      notifyListeners();
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await fetchUserProfile(); // Cargar datos al entrar
+      return null; // Éxito
+    } on FirebaseAuthException catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      return e.message;
+    }
+  }
+
+  // Registro
+  Future<String?> register(String email, String password) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
       await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return true;
+      // Al registrarse, _userProfile será null, lo que forzará el Onboarding
+      return null;
     } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message ?? "Error al registrarse";
-      return false;
-    } catch (e) {
-      _errorMessage = e.toString();
-      return false;
-    } finally {
       _isLoading = false;
       notifyListeners();
+      return e.message;
     }
   }
 
+  // Guardar Perfil (Se llama al finalizar el Onboarding o editar perfil)
   Future<void> saveUserProfile(UserProfile profile) async {
+    if (_user == null) return;
     try {
-      await _db.collection('users').doc(profile.id).set(profile.toMap());
-      _userProfile = profile;
+      // Asegurar que el ID sea el del usuario actual
+      final profileToSave = UserProfile(
+        id: _user!.uid,
+        email: _user!.email ?? '',
+        name: profile.name,
+        age: profile.age,
+        weight: profile.weight,
+        height: profile.height,
+        gender: profile.gender,
+        goal: profile.goal,
+        level: profile.level,
+      );
+
+      await _firestore
+          .collection('users')
+          .doc(_user!.uid)
+          .set(profileToSave.toMap());
+      _userProfile = profileToSave; // Actualizar localmente
       notifyListeners();
     } catch (e) {
-      print("Error guardando perfil: $e");
-    }
-  }
-
-  Future<void> _fetchUserProfile() async {
-    if (_firebaseUser == null) return;
-    try {
-      final doc = await _db.collection('users').doc(_firebaseUser!.uid).get();
-      if (doc.exists) {
-        _userProfile = UserProfile.fromMap(doc.data()!);
-        notifyListeners();
-      }
-    } catch (e) {
-      print("Error leyendo perfil: $e");
+      print("Error saving profile: $e");
+      rethrow;
     }
   }
 
   Future<void> logout() async {
     await _auth.signOut();
+    _user = null;
+    _userProfile = null;
+    notifyListeners();
   }
 }

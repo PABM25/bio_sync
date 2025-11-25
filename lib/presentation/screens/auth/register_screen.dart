@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../main_layout.dart';
+// No necesitamos importar MainLayout aquí porque el AuthWrapper en main.dart
+// redirigirá automáticamente al Onboarding cuando el usuario se cree.
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -51,7 +52,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Email
               _buildModernTextField(
                 controller: _emailController,
                 hintText: 'Correo electrónico',
@@ -59,7 +59,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Password
               _buildModernTextField(
                 controller: _passwordController,
                 hintText: 'Contraseña',
@@ -68,7 +67,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Confirm Password
               _buildModernTextField(
                 controller: _confirmPasswordController,
                 hintText: 'Confirmar contraseña',
@@ -85,38 +83,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onPressed: authProvider.isLoading
                       ? null
                       : () async {
+                          // Validar contraseñas
                           if (_passwordController.text !=
                               _confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text("Las contraseñas no coinciden"),
+                                backgroundColor: Colors.orange,
                               ),
                             );
                             return;
                           }
 
-                          final success = await authProvider.register(
+                          // LÓGICA CORREGIDA AQUÍ
+                          final error = await authProvider.register(
                             _emailController.text.trim(),
                             _passwordController.text.trim(),
                           );
 
-                          if (success && mounted) {
-                            // El AuthWrapper en main.dart se encargará de redirigir,
-                            // pero por seguridad cerramos todas las rutas previas.
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (_) => const MainLayout(),
-                              ),
-                              (Route<dynamic> route) => false,
-                            );
-                          } else if (!success && mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  authProvider.errorMessage ?? "Error",
+                          if (mounted) {
+                            if (error == null) {
+                              // Éxito: Cerramos esta pantalla.
+                              // El AuthWrapper detectará el nuevo usuario y mostrará OnboardingScreen.
+                              Navigator.pop(context);
+                            } else {
+                              // Error: Mostrar mensaje
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error),
+                                  backgroundColor: Colors.red,
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           }
                         },
                   style: ElevatedButton.styleFrom(

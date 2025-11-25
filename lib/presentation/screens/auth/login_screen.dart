@@ -28,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              // Títulos
               const Text(
                 "¡Hola de nuevo!",
                 style: TextStyle(
@@ -44,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 40),
 
-              // Campo de Email
               _buildModernTextField(
                 controller: _emailController,
                 hintText: 'Correo electrónico',
@@ -52,7 +50,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Campo de Contraseña
               _buildModernTextField(
                 controller: _passwordController,
                 hintText: 'Contraseña',
@@ -60,12 +57,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 isPassword: true,
               ),
 
-              // Olvidé mi contraseña
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // TODO: Implementar recuperación de contraseña
+                    // TODO: Implementar recuperación
                   },
                   child: const Text(
                     "¿Olvidaste tu contraseña?",
@@ -75,17 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Mensaje de error si existe
-              if (authProvider.errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(
-                    authProvider.errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
-
-              // Botón de Login Grande
+              // Botón de Login
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -93,17 +79,31 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: authProvider.isLoading
                       ? null
                       : () async {
-                          final success = await authProvider.login(
+                          // LÓGICA CORREGIDA AQUÍ
+                          final error = await authProvider.login(
                             _emailController.text.trim(),
                             _passwordController.text.trim(),
                           );
-                          if (success && mounted) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MainLayout(),
-                              ),
-                            );
+
+                          if (mounted) {
+                            if (error == null) {
+                              // Éxito: AuthWrapper se encarga de redirigir
+                              // Pero por seguridad, podemos empujar el layout
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const MainLayout(),
+                                ),
+                              );
+                            } else {
+                              // Error: Mostrar mensaje
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
                           }
                         },
                   style: ElevatedButton.styleFrom(
@@ -127,7 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Divisor "O continúa con"
               const Row(
                 children: [
                   Expanded(child: Divider()),
@@ -143,24 +142,16 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Botones Sociales (Placeholder visual)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _socialButton(
-                    Icons.g_mobiledata,
-                    Colors.red,
-                  ), // Google placeholder
-                  _socialButton(Icons.apple, Colors.black), // Apple placeholder
-                  _socialButton(
-                    Icons.facebook,
-                    Colors.blue,
-                  ), // Facebook placeholder
+                  _socialButton(Icons.g_mobiledata, Colors.red),
+                  _socialButton(Icons.apple, Colors.black),
+                  _socialButton(Icons.facebook, Colors.blue),
                 ],
               ),
               const SizedBox(height: 40),
 
-              // Enlace a Registro
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -194,7 +185,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Widget auxiliar para los campos de texto modernos
   Widget _buildModernTextField({
     required TextEditingController controller,
     required String hintText,
@@ -223,7 +213,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Widget auxiliar para botones sociales
   Widget _socialButton(IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(12),

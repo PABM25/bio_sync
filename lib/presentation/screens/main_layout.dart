@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'dashboard_screen.dart'; // Ya no usamos esta, la reemplazamos por la moderna
-import 'exercise_screen.dart'; // <--- IMPORTA LA NUEVA PANTALLA DE EJERCICIOS
+import 'exercise_screen.dart';
 import 'nutrition_screen.dart';
 import 'ai_chat/chat_screen.dart';
+import 'profile_screen.dart'; // <--- Importante: Importar Perfil
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -13,34 +13,42 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _index = 0;
 
+  // Lista de las 4 pantallas
   final _screens = [
-    const ExerciseScreen(), // <--- USAMOS ExerciseScreen COMO INICIO
+    const ExerciseScreen(),
     const NutritionScreen(),
     ChatScreen(),
+    const ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_index],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
-        selectedItemColor: const Color(0xFF8B5CF6),
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center), // Icono más acorde a ejercicios
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _index,
+        onDestinationSelected: (i) => setState(() => _index = i),
+        indicatorColor: const Color(0xFFEADDFF),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.fitness_center_outlined),
+            selectedIcon: Icon(Icons.fitness_center),
             label: "Entrenar",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
+          NavigationDestination(
+            icon: Icon(Icons.restaurant_outlined),
+            selectedIcon: Icon(Icons.restaurant),
             label: "Nutrición",
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.chat_bubble_outline),
+            selectedIcon: Icon(Icons.chat_bubble),
             label: "FitAI",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: "Perfil",
           ),
         ],
       ),

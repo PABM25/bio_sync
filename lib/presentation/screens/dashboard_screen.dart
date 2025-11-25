@@ -110,15 +110,15 @@ class DashboardScreen extends StatelessWidget {
                       (ejercicio) => _buildExerciseItem(
                         ejercicio.nombre,
                         ejercicio.descanso,
-                        ejercicio.detalle, // "20 reps" o "1 min"
+                        ejercicio.getDetalleParaUsuario(
+                          data.grupoEdadUsuario,
+                        ), // "20 reps" o "1 min"
                       ),
                     )
                   else
                     const Center(
                       child: Text("¡Felicidades! Has completado el reto."),
                     ),
-
-                  const SizedBox(height: 30),
 
                   // 5. Botón para avanzar al siguiente día
                   SizedBox(
