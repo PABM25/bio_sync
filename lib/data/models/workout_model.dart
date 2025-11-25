@@ -27,34 +27,49 @@ class Ejercicio {
   final String nombre;
   final String descanso;
   final String? nota;
-  // Guardaremos repeticiones como String para simplificar ("20", "1 min")
-  // En una versión avanzada, haríamos lógica por edad.
-  final String detalle;
+
+  // Nuevas variables para manejar lógica por edad
+  final Map<String, dynamic>? repeticionesPorEdad;
+  final Map<String, dynamic>? duracionPorEdad;
 
   Ejercicio({
     required this.nombre,
     required this.descanso,
     this.nota,
-    required this.detalle,
+    this.repeticionesPorEdad,
+    this.duracionPorEdad,
   });
 
   factory Ejercicio.fromJson(Map<String, dynamic> json) {
-    // Lógica simple: Tomamos el valor '30s' por defecto para mostrar algo en UI rápido
-    // Si es por tiempo, tomamos 'duracion', si es reps, tomamos 'repeticiones'
-    String det = "";
-    if (json.containsKey('duracion')) {
-      var d = json['duracion'];
-      det = d is Map ? d['30s'] ?? "Tiempo" : "Tiempo";
-    } else if (json.containsKey('repeticiones')) {
-      var r = json['repeticiones'];
-      det = r is Map ? "${r['30s']} reps" : "Reps";
+    return Ejercicio(
+      nombre: json['nombre'] ?? "Ejercicio",
+      descanso: json['descanso'] ?? "30 seg",
+      nota: json['nota'],
+      // Guardamos los mapas completos en lugar de un string fijo
+      repeticionesPorEdad: json['repeticiones'] is Map
+          ? json['repeticiones']
+          : null,
+      duracionPorEdad: json['duracion'] is Map ? json['duracion'] : null,
+    );
+  }
+
+  // Este es el método que reemplaza a ".detalle"
+  String getDetalleParaUsuario(String grupoEdad) {
+    // grupoEdad viene del DataProvider (ej: "20s", "30s", "40s_mas")
+
+    // 1. Prioridad: Duración (tiempo)
+    if (duracionPorEdad != null) {
+      var val = duracionPorEdad![grupoEdad] ?? duracionPorEdad!.values.first;
+      return val.toString();
     }
 
-    return Ejercicio(
-      nombre: json['nombre'],
-      descanso: json['descanso'],
-      nota: json['nota'],
-      detalle: det,
-    );
+    // 2. Prioridad: Repeticiones
+    if (repeticionesPorEdad != null) {
+      var val =
+          repeticionesPorEdad![grupoEdad] ?? repeticionesPorEdad!.values.first;
+      return "$val reps";
+    }
+
+    return "Libre";
   }
 }
