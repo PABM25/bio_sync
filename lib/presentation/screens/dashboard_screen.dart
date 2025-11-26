@@ -9,7 +9,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = Provider.of<DataProvider>(context);
-    final rutina = data.rutinaHoy;
+    final rutina = data.rutinaRetoHoy;
 
     // Detectamos el modo oscuro para ajustar textos
     final isDark = Theme.of(context).brightness == Brightness.dark;

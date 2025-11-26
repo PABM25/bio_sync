@@ -79,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: authProvider.isLoading
                       ? null
                       : () async {
-                          // LÓGICA CORREGIDA AQUÍ
                           final error = await authProvider.login(
                             _emailController.text.trim(),
                             _passwordController.text.trim(),
@@ -87,8 +86,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           if (mounted) {
                             if (error == null) {
-                              // Éxito: AuthWrapper se encarga de redirigir
-                              // Pero por seguridad, podemos empujar el layout
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -96,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             } else {
-                              // Error: Mostrar mensaje
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(error),
@@ -145,9 +141,33 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _socialButton(Icons.g_mobiledata, Colors.red),
-                  _socialButton(Icons.apple, Colors.black),
-                  _socialButton(Icons.facebook, Colors.blue),
+                  // --- BOTÓN GOOGLE CONECTADO ---
+                  _socialButton(
+                    icon: Icons.g_mobiledata,
+                    color: Colors.red,
+                    onTap: () async {
+                      final error = await authProvider.signInWithGoogle();
+                      if (error != null && mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(error),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                      // Si error es null, AuthWrapper redirigirá automáticamente
+                    },
+                  ),
+                  _socialButton(
+                    icon: Icons.apple,
+                    color: Colors.black,
+                    onTap: () {},
+                  ),
+                  _socialButton(
+                    icon: Icons.facebook,
+                    color: Colors.blue,
+                    onTap: () {},
+                  ),
                 ],
               ),
               const SizedBox(height: 40),
@@ -213,14 +233,22 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialButton(IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
+  // Widget actualizado para aceptar onTap
+  Widget _socialButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: color, size: 32),
       ),
-      child: Icon(icon, color: color, size: 32),
     );
   }
 }

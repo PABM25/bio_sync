@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/data_provider.dart';
-import '../providers/theme_provider.dart'; // <--- Importar ThemeProvider
+import '../providers/theme_provider.dart';
 import '../../data/models/user.model.dart';
 import 'auth/login_screen.dart';
-import '../widgets/weight_chart.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
-
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -20,6 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _heightController = TextEditingController();
   final _ageController = TextEditingController();
   String _selectedGoal = "Perder Peso";
+  String _selectedGender = "Hombre"; // <---
   bool _isEditing = false;
   bool _isLoading = false;
 
@@ -41,11 +40,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _heightController.text = user.height.toString();
         _ageController.text = user.age.toString();
         _selectedGoal = user.goal;
+        _selectedGender = user.gender; // <---
       } else {
         _nameController.text = dataProvider.userName;
         _ageController.text = dataProvider.userAge.toString();
-        _weightController.text = "70.0";
-        _heightController.text = "170.0";
+        _selectedGender = dataProvider.userGender; // <---
       }
     });
   }
@@ -54,11 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final dataProvider = Provider.of<DataProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(
-      context,
-    ); // <--- Provider de Tema
-
-    // Detectar si estamos en modo oscuro para ajustar colores locales si hace falta
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -84,6 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
+            // ... (Avatar e Info Email igual que antes)
             const CircleAvatar(
               radius: 50,
               backgroundColor: Color(0xFFEADDFF),
@@ -94,10 +90,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               authProvider.user?.email ?? "usuario@biosync.com",
               style: TextStyle(color: Colors.grey[600]),
             ),
-
             const SizedBox(height: 20),
 
-            // --- SWITCH DE MODO OSCURO ---
+            // Switch Tema
             Container(
               decoration: BoxDecoration(
                 color: cardColor,
@@ -118,17 +113,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 value: themeProvider.isDarkMode,
                 activeColor: const Color(0xFF8B5CF6),
-                onChanged: (val) {
-                  themeProvider.toggleTheme(val);
-                },
+                onChanged: (val) => themeProvider.toggleTheme(val),
               ),
             ),
-
-            // -----------------------------
             const SizedBox(height: 32),
 
             _buildField("Nombre", _nameController, Icons.person, false, isDark),
             const SizedBox(height: 16),
+
+            // Nuevo Dropdown de Género
+            DropdownButtonFormField<String>(
+              dropdownColor: cardColor,
+              value: ["Hombre", "Mujer", "Otro"].contains(_selectedGender)
+                  ? _selectedGender
+                  : "Hombre",
+              items: ["Hombre", "Mujer", "Otro"]
+                  .map(
+                    (g) => DropdownMenuItem(
+                      value: g,
+                      child: Text(g, style: TextStyle(color: textColor)),
+                    ),
+                  )
+                  .toList(),
+              onChanged: _isEditing
+                  ? (val) => setState(() => _selectedGender = val!)
+                  : null,
+              decoration: _inputDecor("Género", isDark, _isEditing),
+            ),
+            const SizedBox(height: 16),
+
             Row(
               children: [
                 Expanded(
@@ -163,15 +176,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 24),
 
             DropdownButtonFormField<String>(
-              dropdownColor: cardColor, // Fondo del menú desplegable
-              value:
-                  [
-                    "Perder Peso",
-                    "Ganar Músculo",
-                    "Mantenerme",
-                  ].contains(_selectedGoal)
-                  ? _selectedGoal
-                  : "Perder Peso",
+              dropdownColor: cardColor,
+              value: _selectedGoal,
               items: ["Perder Peso", "Ganar Músculo", "Mantenerme"]
                   .map(
                     (g) => DropdownMenuItem(
@@ -183,24 +189,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onChanged: _isEditing
                   ? (val) => setState(() => _selectedGoal = val!)
                   : null,
-              decoration: InputDecoration(
-                labelText: "Meta Actual",
-                labelStyle: TextStyle(
-                  color: isDark ? Colors.grey : Colors.black54,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: _isEditing
-                    ? (isDark ? const Color(0xFF2C2C2C) : Colors.white)
-                    : (isDark ? const Color(0xFF121212) : Colors.grey[100]),
-              ),
+              decoration: _inputDecor("Meta Actual", isDark, _isEditing),
             ),
 
             const SizedBox(height: 30),
 
-            // --- TARJETA DE CALORÍAS ---
+            // Tarjeta Calorías (Igual que antes)
             if (authProvider.userProfile != null)
               Container(
                 width: double.infinity,
@@ -213,8 +207,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const Color(0xFF8B5CF6).withOpacity(0.1),
                             Colors.white,
                           ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
@@ -223,25 +215,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.local_fire_department,
-                          color: Colors.orange,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Tu Meta Diaria Calculada",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: textColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
                     Text(
                       "${authProvider.userProfile!.dailyCalories} Kcal",
                       style: const TextStyle(
@@ -250,38 +223,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Color(0xFF8B5CF6),
                       ),
                     ),
-                    const SizedBox(height: 8),
                     const Text(
-                      "Basado en tu edad, medidas y objetivo.",
+                      "Meta Diaria",
                       style: TextStyle(fontSize: 12, color: Colors.grey),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
-
-            // --- GRÁFICO DE PESO ---
-            const SizedBox(height: 30),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Tu Progreso (Estimado)",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            WeightChart(
-              weightHistory: [
-                (authProvider.userProfile?.weight ?? 70) + 2.5,
-                (authProvider.userProfile?.weight ?? 70) + 1.5,
-                (authProvider.userProfile?.weight ?? 70) + 0.5,
-                (authProvider.userProfile?.weight ?? 70),
-              ],
-            ),
 
             const SizedBox(height: 40),
             if (_isLoading) const CircularProgressIndicator(),
@@ -290,23 +238,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () async {
+                  await dataProvider.clearLocalData();
                   await authProvider.logout();
-                  if (mounted) {
+                  if (mounted)
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                       (r) => false,
                     );
-                  }
                 },
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: const Text(
                   "Cerrar Sesión",
                   style: TextStyle(color: Colors.red),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.red),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
               ),
             ),
@@ -329,27 +273,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
       enabled: _isEditing,
       keyboardType: isNum ? TextInputType.number : TextInputType.text,
       style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: isDark ? Colors.grey : Colors.black54),
-        prefixIcon: Icon(
-          icon,
-          color: _isEditing ? const Color(0xFF8B5CF6) : Colors.grey,
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        filled: true,
-        fillColor: _isEditing
-            ? (isDark ? const Color(0xFF2C2C2C) : Colors.white)
-            : (isDark ? const Color(0xFF121212) : Colors.grey[100]),
-      ),
+      decoration: _inputDecor(label, isDark, _isEditing, icon: icon),
+    );
+  }
+
+  InputDecoration _inputDecor(
+    String label,
+    bool isDark,
+    bool enabled, {
+    IconData? icon,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: isDark ? Colors.grey : Colors.black54),
+      prefixIcon: icon != null
+          ? Icon(icon, color: enabled ? const Color(0xFF8B5CF6) : Colors.grey)
+          : null,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      filled: true,
+      fillColor: enabled
+          ? (isDark ? const Color(0xFF2C2C2C) : Colors.white)
+          : (isDark ? const Color(0xFF121212) : Colors.grey[100]),
     );
   }
 
   void _toggleEdit(AuthProvider auth, DataProvider data) async {
-    // ... (El código de guardado sigue igual)
     if (_isEditing) {
       setState(() => _isLoading = true);
-      // ... lógica de guardado ...
       final newProfile = UserProfile(
         id: auth.user?.uid ?? '',
         email: auth.user?.email ?? '',
@@ -357,10 +307,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         age: int.tryParse(_ageController.text) ?? 30,
         weight: double.tryParse(_weightController.text) ?? 70.0,
         height: double.tryParse(_heightController.text) ?? 170.0,
-        gender: auth.userProfile?.gender ?? "Otro",
+        gender: _selectedGender, // <--- Guardar Género Editado
         goal: _selectedGoal,
         level: auth.userProfile?.level ?? "Intermedio",
-        currentDay: auth.userProfile?.currentDay ?? 1,
       );
 
       await auth.saveUserProfile(newProfile);
@@ -369,14 +318,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         newProfile.goal,
         newProfile.level,
         newProfile.age,
+        newProfile.gender,
       );
-      // ...
       setState(() => _isLoading = false);
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Perfil actualizado")));
-      }
     }
     setState(() => _isEditing = !_isEditing);
   }

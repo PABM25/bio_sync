@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'exercise_screen.dart';
+import 'exercise_screen.dart'; // Pestaña Personalizada
+import 'challenge_screen.dart'; // Pestaña Reto (NUEVA)
 import 'nutrition_screen.dart';
 import 'ai_chat/chat_screen.dart';
-import 'profile_screen.dart'; // <--- Importante: Importar Perfil
+import 'profile_screen.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -13,12 +14,13 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _index = 0;
 
-  // Lista de las 4 pantallas
+  // Ahora tenemos 5 pestañas
   final _screens = [
-    const ExerciseScreen(),
-    const NutritionScreen(),
-    ChatScreen(),
-    const ProfileScreen(),
+    const ExerciseScreen(), // 0: Rutina Personalizada
+    const ChallengeScreen(), // 1: Reto 45 Días (NUEVA)
+    const NutritionScreen(), // 2: Nutrición
+    ChatScreen(), // 3: Chat AI
+    const ProfileScreen(), // 4: Perfil
   ];
 
   @override
@@ -31,14 +33,19 @@ class _MainLayoutState extends State<MainLayout> {
         indicatorColor: const Color(0xFFEADDFF),
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.fitness_center_outlined),
-            selectedIcon: Icon(Icons.fitness_center),
-            label: "Entrenar",
+            icon: Icon(Icons.accessibility_new),
+            selectedIcon: Icon(Icons.accessibility_new_rounded),
+            label: "Mi Plan", // Personalizado
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.flag_outlined),
+            selectedIcon: Icon(Icons.flag),
+            label: "Reto 45", // Reto
           ),
           NavigationDestination(
             icon: Icon(Icons.restaurant_outlined),
             selectedIcon: Icon(Icons.restaurant),
-            label: "Nutrición",
+            label: "Dieta",
           ),
           NavigationDestination(
             icon: Icon(Icons.chat_bubble_outline),

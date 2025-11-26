@@ -103,7 +103,7 @@ class ChatScreen extends StatelessWidget {
   ) {
     if (_controller.text.trim().isNotEmpty) {
       // Preparamos el contexto del día actual para la IA
-      final rutina = data.rutinaHoy;
+      final rutina = data.rutinaRetoHoy;
       final dieta = data.dietaHoy;
 
       String contextInfo =

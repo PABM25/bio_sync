@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/models/user.model.dart'; // Asegúrate que la ruta sea correcta
+import '../../data/models/user.model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/data_provider.dart';
 import 'main_layout.dart';
@@ -15,7 +15,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _page = 0;
 
-  // Controladores
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
@@ -23,15 +22,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   String _selectedGoal = "Perder Peso";
   String _selectedLevel = "Intermedio";
-  bool _isSaving = false; // Para evitar doble clic
+  String _selectedGender = "Hombre"; // <--- NUEVO CAMPO
+  bool _isSaving = false;
 
   @override
   Widget build(BuildContext context) {
-    // Definimos las páginas según tus imágenes
+    // Lista de páginas actualizada con Género
     final List<Widget> pages = [
       _buildNamePage(),
+      _buildGenderPage(), // <--- NUEVA PÁGINA
       _buildAgePage(),
-      _buildWeightHeightPage(), // Página combinada o separada
+      _buildWeightHeightPage(),
       _buildGoalPage(),
       _buildLevelPage(),
     ];
@@ -51,13 +52,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Expanded(
                 child: PageView(
                   controller: _pageController,
-                  physics:
-                      const NeverScrollableScrollPhysics(), // Bloqueamos swipe manual para obligar a usar botón
+                  physics: const NeverScrollableScrollPhysics(),
                   onPageChanged: (p) => setState(() => _page = p),
                   children: pages,
                 ),
               ),
 
+              // Indicador de puntos
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
@@ -120,7 +121,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final dataProvider = Provider.of<DataProvider>(context, listen: false);
 
-      // Recolectar datos
       String name = _nameController.text.trim().isEmpty
           ? "Atleta"
           : _nameController.text.trim();
@@ -128,7 +128,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       double weight = double.tryParse(_weightController.text) ?? 70.0;
       double height = double.tryParse(_heightController.text) ?? 170.0;
 
-      // 1. Crear Objeto Perfil
       final newProfile = UserProfile(
         id: authProvider.user?.uid ?? '',
         email: authProvider.user?.email ?? '',
@@ -136,18 +135,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         age: age,
         weight: weight,
         height: height,
-        gender: "Otro", // Puedes agregar pantalla de género si quieres
+        gender: _selectedGender, // <--- GUARDAR GÉNERO
         goal: _selectedGoal,
         level: _selectedLevel,
       );
 
-      // 2. Guardar en Firebase (Esto desbloquea el MainLayout en AuthWrapper)
       await authProvider.saveUserProfile(newProfile);
 
-      // 3. Guardar en Local (Para uso rápido en ejercicios)
-      await dataProvider.setUserData(name, _selectedGoal, _selectedLevel, age);
+      // Actualizar DataProvider localmente
+      await dataProvider.setUserData(
+        name,
+        _selectedGoal,
+        _selectedLevel,
+        age,
+        _selectedGender,
+      );
 
-      // Navegar al MainLayout
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
@@ -163,7 +166,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  // --- Widgets de las Páginas ---
+  // --- Widgets de Páginas ---
 
   Widget _buildNamePage() {
     return _buildPageBase(
@@ -173,6 +176,50 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: TextField(
         controller: _nameController,
         decoration: _inputDecor("Tu nombre"),
+      ),
+    );
+  }
+
+  // NUEVO: Página de Género
+  Widget _buildGenderPage() {
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            "Selecciona tu género",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            "Para calcular mejor tus calorías",
+            style: TextStyle(fontSize: 16, color: Colors.white70),
+          ),
+          const SizedBox(height: 30),
+          _option(
+            "Hombre",
+            Icons.male,
+            _selectedGender,
+            (v) => setState(() => _selectedGender = v),
+          ),
+          _option(
+            "Mujer",
+            Icons.female,
+            _selectedGender,
+            (v) => setState(() => _selectedGender = v),
+          ),
+          _option(
+            "Otro",
+            Icons.person_outline,
+            _selectedGender,
+            (v) => setState(() => _selectedGender = v),
+          ),
+        ],
       ),
     );
   }
