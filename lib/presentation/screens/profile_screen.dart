@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/data_provider.dart';
+import '../providers/theme_provider.dart'; // <--- Importar ThemeProvider
 import '../../data/models/user.model.dart';
 import 'auth/login_screen.dart';
-import '../widgets/weight_chart.dart'; // <--- Importante
+import '../widgets/weight_chart.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -53,6 +54,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final dataProvider = Provider.of<DataProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(
+      context,
+    ); // <--- Provider de Tema
+
+    // Detectar si estamos en modo oscuro para ajustar colores locales si hace falta
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
 
     return Scaffold(
       appBar: AppBar(
@@ -85,14 +94,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
               authProvider.user?.email ?? "usuario@biosync.com",
               style: TextStyle(color: Colors.grey[600]),
             ),
+
+            const SizedBox(height: 20),
+
+            // --- SWITCH DE MODO OSCURO ---
+            Container(
+              decoration: BoxDecoration(
+                color: cardColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.withOpacity(0.1)),
+              ),
+              child: SwitchListTile(
+                title: Text(
+                  "Modo Oscuro",
+                  style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                secondary: Icon(
+                  themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                  color: const Color(0xFF8B5CF6),
+                ),
+                value: themeProvider.isDarkMode,
+                activeColor: const Color(0xFF8B5CF6),
+                onChanged: (val) {
+                  themeProvider.toggleTheme(val);
+                },
+              ),
+            ),
+
+            // -----------------------------
             const SizedBox(height: 32),
 
-            _buildField("Nombre", _nameController, Icons.person, false),
+            _buildField("Nombre", _nameController, Icons.person, false, isDark),
             const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
-                  child: _buildField("Edad", _ageController, Icons.cake, true),
+                  child: _buildField(
+                    "Edad",
+                    _ageController,
+                    Icons.cake,
+                    true,
+                    isDark,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -101,15 +147,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _weightController,
                     Icons.monitor_weight,
                     true,
+                    isDark,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            _buildField("Altura (cm)", _heightController, Icons.height, true),
+            _buildField(
+              "Altura (cm)",
+              _heightController,
+              Icons.height,
+              true,
+              isDark,
+            ),
             const SizedBox(height: 24),
 
             DropdownButtonFormField<String>(
+              dropdownColor: cardColor, // Fondo del menú desplegable
               value:
                   [
                     "Perder Peso",
@@ -118,37 +172,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ].contains(_selectedGoal)
                   ? _selectedGoal
                   : "Perder Peso",
-              items: [
-                "Perder Peso",
-                "Ganar Músculo",
-                "Mantenerme",
-              ].map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
+              items: ["Perder Peso", "Ganar Músculo", "Mantenerme"]
+                  .map(
+                    (g) => DropdownMenuItem(
+                      value: g,
+                      child: Text(g, style: TextStyle(color: textColor)),
+                    ),
+                  )
+                  .toList(),
               onChanged: _isEditing
                   ? (val) => setState(() => _selectedGoal = val!)
                   : null,
               decoration: InputDecoration(
                 labelText: "Meta Actual",
+                labelStyle: TextStyle(
+                  color: isDark ? Colors.grey : Colors.black54,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
-                fillColor: _isEditing ? Colors.white : Colors.grey[100],
+                fillColor: _isEditing
+                    ? (isDark ? const Color(0xFF2C2C2C) : Colors.white)
+                    : (isDark ? const Color(0xFF121212) : Colors.grey[100]),
               ),
             ),
 
             const SizedBox(height: 30),
 
-            // --- TARJETA DE CALORÍAS (Ya implementada) ---
+            // --- TARJETA DE CALORÍAS ---
             if (authProvider.userProfile != null)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      const Color(0xFF8B5CF6).withOpacity(0.1),
-                      Colors.white,
-                    ],
+                    colors: isDark
+                        ? [const Color(0xFF2C2C2C), const Color(0xFF1E1E1E)]
+                        : [
+                            const Color(0xFF8B5CF6).withOpacity(0.1),
+                            Colors.white,
+                          ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -159,17 +223,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: Column(
                   children: [
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.local_fire_department, color: Colors.orange),
-                        SizedBox(width: 8),
+                        const Icon(
+                          Icons.local_fire_department,
+                          color: Colors.orange,
+                        ),
+                        const SizedBox(width: 8),
                         Text(
                           "Tu Meta Diaria Calculada",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: textColor,
                           ),
                         ),
                       ],
@@ -193,19 +260,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-            // --- NUEVO: GRÁFICO DE PESO ---
+            // --- GRÁFICO DE PESO ---
             const SizedBox(height: 30),
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Tu Progreso (Estimado)",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
             ),
             const SizedBox(height: 15),
             WeightChart(
               weightHistory: [
-                // Simulamos datos históricos para ver el gráfico
                 (authProvider.userProfile?.weight ?? 70) + 2.5,
                 (authProvider.userProfile?.weight ?? 70) + 1.5,
                 (authProvider.userProfile?.weight ?? 70) + 0.5,
@@ -213,7 +283,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
 
-            // -------------------------------------------
             const SizedBox(height: 40),
             if (_isLoading) const CircularProgressIndicator(),
 
@@ -253,27 +322,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     TextEditingController ctrl,
     IconData icon,
     bool isNum,
+    bool isDark,
   ) {
     return TextField(
       controller: ctrl,
       enabled: _isEditing,
       keyboardType: isNum ? TextInputType.number : TextInputType.text,
+      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(color: isDark ? Colors.grey : Colors.black54),
         prefixIcon: Icon(
           icon,
           color: _isEditing ? const Color(0xFF8B5CF6) : Colors.grey,
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true,
-        fillColor: _isEditing ? Colors.white : Colors.grey[100],
+        fillColor: _isEditing
+            ? (isDark ? const Color(0xFF2C2C2C) : Colors.white)
+            : (isDark ? const Color(0xFF121212) : Colors.grey[100]),
       ),
     );
   }
 
   void _toggleEdit(AuthProvider auth, DataProvider data) async {
+    // ... (El código de guardado sigue igual)
     if (_isEditing) {
       setState(() => _isLoading = true);
+      // ... lógica de guardado ...
       final newProfile = UserProfile(
         id: auth.user?.uid ?? '',
         email: auth.user?.email ?? '',
@@ -294,7 +370,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         newProfile.level,
         newProfile.age,
       );
-
+      // ...
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(
