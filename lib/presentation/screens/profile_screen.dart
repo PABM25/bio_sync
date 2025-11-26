@@ -112,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: const Color(0xFF8B5CF6),
                 ),
                 value: themeProvider.isDarkMode,
-                activeColor: const Color(0xFF8B5CF6),
+                activeThumbColor: const Color(0xFF8B5CF6),
                 onChanged: (val) => themeProvider.toggleTheme(val),
               ),
             ),
@@ -124,7 +124,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Nuevo Dropdown de Género
             DropdownButtonFormField<String>(
               dropdownColor: cardColor,
-              value: ["Hombre", "Mujer", "Otro"].contains(_selectedGender)
+              initialValue:
+                  ["Hombre", "Mujer", "Otro"].contains(_selectedGender)
                   ? _selectedGender
                   : "Hombre",
               items: ["Hombre", "Mujer", "Otro"]
@@ -177,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             DropdownButtonFormField<String>(
               dropdownColor: cardColor,
-              value: _selectedGoal,
+              initialValue: _selectedGoal,
               items: ["Perder Peso", "Ganar Músculo", "Mantenerme"]
                   .map(
                     (g) => DropdownMenuItem(
@@ -216,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     Text(
-                      "${authProvider.userProfile!.dailyCalories} Kcal",
+                      "${authProvider.userProfile!.exactDailyCalories} Kcal",
                       style: const TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
@@ -240,12 +241,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () async {
                   await dataProvider.clearLocalData();
                   await authProvider.logout();
-                  if (mounted)
+                  if (mounted) {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                       (r) => false,
                     );
+                  }
                 },
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: const Text(

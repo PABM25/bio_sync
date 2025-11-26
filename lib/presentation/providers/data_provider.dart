@@ -1,30 +1,47 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Para rootBundle
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../data/models/workout_model.dart';
 import '../../data/models/diet_model.dart';
+import '../../data/models/user.model.dart'; // Importa UserProfile
+import '../../data/datasources/gemini_service.dart'; // Importa el servicio
 
 class DataProvider with ChangeNotifier {
-  // Datos del Usuario
+  // Servicios
+  final GeminiService _geminiService = GeminiService();
+
+  // Datos Usuario
   String userName = "Atleta";
   String userGoal = "Perder Peso";
   String userLevel = "Intermedio";
-  String userGender = "Hombre"; // <--- NUEVO
+  String userGender = "Hombre";
   int userAge = 30;
 
-  // Progreso Reto
+  // Progreso
   int currentDay = 1;
   int waterGlasses = 0;
 
-  List<RutinaDia> _rutinaCompleta = [];
-  List<PlanDiario> _planNutricional = [];
-  bool isLoading = true;
+  // Rutinas
+  RutinaDia? _rutinaIAGenerada; // Aquí guardamos la respuesta de la IA
+  List<RutinaDia> _rutinaCompleta = []; // Rutina del JSON local (Reto 45)
+  List<PlanDiario> _planNutricional = []; // Dieta del JSON local
 
-  // Rutina del Reto (Challenge)
+  bool isLoading = true;
+  bool isGeneratingRoutine = false; // Estado para carga de IA
+
+  // Getter inteligente: Devuelve IA si existe, sino Fallback
+  RutinaDia get rutinaPersonalizada {
+    if (_rutinaIAGenerada != null) {
+      return _rutinaIAGenerada!;
+    }
+    return _getRutinaHardcodedFallback(); // Tu lógica antigua como respaldo
+  }
+
+  // Getter para el reto de 45 días (JSON local)
   RutinaDia? get rutinaRetoHoy {
     if (_rutinaCompleta.isEmpty) return null;
     return _rutinaCompleta.firstWhere(
@@ -33,100 +50,7 @@ class DataProvider with ChangeNotifier {
     );
   }
 
-  // --- NUEVO: Lógica de Rutina Personalizada ---
-  RutinaDia get rutinaPersonalizada {
-    String enfoque = "Entrenamiento Personal";
-    List<Ejercicio> ejercicios = [];
-
-    // Generar rutina basada en el OBJETIVO (Lógica simple)
-    if (userGoal == "Ganar Músculo") {
-      enfoque = "Hipertrofia & Fuerza";
-      ejercicios = [
-        Ejercicio(
-          nombre: "Push-ups (Lagartijas)",
-          descanso: "60 seg",
-          repeticionesPorEdad: {"20s": 15, "30s": 12, "40s_mas": 10},
-        ),
-        Ejercicio(
-          nombre: "Sentadillas Profundas",
-          descanso: "60 seg",
-          repeticionesPorEdad: {"20s": 20, "30s": 15, "40s_mas": 12},
-        ),
-        Ejercicio(
-          nombre: "Fondos en silla",
-          descanso: "45 seg",
-          repeticionesPorEdad: {"20s": 15, "30s": 12, "40s_mas": 10},
-        ),
-        Ejercicio(
-          nombre: "Desplantes (Lunges)",
-          descanso: "45 seg",
-          repeticionesPorEdad: {"20s": 20, "30s": 16, "40s_mas": 12},
-        ),
-        Ejercicio(
-          nombre: "Plancha Abdominal",
-          descanso: "60 seg",
-          duracionPorEdad: {"20s": "45s", "30s": "30s", "40s_mas": "20s"},
-        ),
-      ];
-    } else if (userGoal == "Perder Peso") {
-      enfoque = "Cardio & Quema Grasa";
-      ejercicios = [
-        Ejercicio(
-          nombre: "Jumping Jacks",
-          descanso: "30 seg",
-          repeticionesPorEdad: {"20s": 50, "30s": 40, "40s_mas": 30},
-        ),
-        Ejercicio(
-          nombre: "Burpees",
-          descanso: "45 seg",
-          repeticionesPorEdad: {"20s": 15, "30s": 12, "40s_mas": 8},
-        ),
-        Ejercicio(
-          nombre: "Mountain Climbers",
-          descanso: "30 seg",
-          duracionPorEdad: {"20s": "40s", "30s": "30s", "40s_mas": "20s"},
-        ),
-        Ejercicio(
-          nombre: "High Knees",
-          descanso: "30 seg",
-          duracionPorEdad: {"20s": "40s", "30s": "30s", "40s_mas": "20s"},
-        ),
-        Ejercicio(
-          nombre: "Sentadillas con Salto",
-          descanso: "45 seg",
-          repeticionesPorEdad: {"20s": 20, "30s": 15, "40s_mas": 10},
-        ),
-      ];
-    } else {
-      // Mantenerme
-      enfoque = "Mantenimiento Full Body";
-      ejercicios = [
-        Ejercicio(
-          nombre: "Jumping Jacks",
-          descanso: "30 seg",
-          repeticionesPorEdad: {"20s": 40, "30s": 30, "40s_mas": 20},
-        ),
-        Ejercicio(
-          nombre: "Sentadillas",
-          descanso: "30 seg",
-          repeticionesPorEdad: {"20s": 20, "30s": 15, "40s_mas": 12},
-        ),
-        Ejercicio(
-          nombre: "Push-ups (rodillas opcionales)",
-          descanso: "45 seg",
-          repeticionesPorEdad: {"20s": 12, "30s": 10, "40s_mas": 8},
-        ),
-        Ejercicio(
-          nombre: "Plancha",
-          descanso: "45 seg",
-          duracionPorEdad: {"20s": "30s", "30s": "25s", "40s_mas": "20s"},
-        ),
-      ];
-    }
-
-    return RutinaDia(dia: 0, enfoque: enfoque, ejercicios: ejercicios);
-  }
-
+  // Getter para la dieta
   PlanDiario? get dietaHoy {
     if (_planNutricional.isEmpty) return null;
     int indexDiaSemana = (currentDay - 1) % 7;
@@ -142,6 +66,99 @@ class DataProvider with ChangeNotifier {
     return "40s_mas";
   }
 
+  // --- NUEVO: Generar Rutina con IA (CORREGIDO) ---
+  Future<void> generarRutinaIA(UserProfile user) async {
+    if (_rutinaIAGenerada != null)
+      return; // Evitar re-generar si ya tenemos una para esta sesión
+
+    isGeneratingRoutine = true;
+    notifyListeners();
+
+    try {
+      print("🤖 Solicitando rutina a Gemini...");
+      final jsonString = await _geminiService.generateRoutineJson(user);
+      final Map<String, dynamic> jsonData = json.decode(jsonString);
+
+      // Transformamos el JSON de Gemini a tu modelo RutinaDia
+      // FIX: Usamos .toString() en TODOS los campos para evitar errores de tipo int vs String
+      List<Ejercicio> ejercicios = (jsonData['ejercicios'] as List).map((e) {
+        // Extraemos el valor de repetición de forma segura
+        String repeticionValor = "10 reps"; // Valor por defecto
+        if (e['repeticiones'] != null &&
+            e['repeticiones']['standard'] != null) {
+          repeticionValor = e['repeticiones']['standard'].toString();
+        }
+
+        return Ejercicio(
+          nombre: e['nombre']?.toString() ?? "Ejercicio IA",
+          descanso: e['descanso']?.toString() ?? "30s",
+          nota: e['nota']?.toString(),
+          // Truco: Guardamos el valor estándar en todas las claves de edad
+          repeticionesPorEdad: {
+            "20s": repeticionValor,
+            "30s": repeticionValor,
+            "40s_mas": repeticionValor,
+          },
+        );
+      }).toList();
+
+      _rutinaIAGenerada = RutinaDia(
+        dia: jsonData['dia'] is int
+            ? jsonData['dia']
+            : int.tryParse(jsonData['dia'].toString()) ?? 1,
+        enfoque: jsonData['enfoque']?.toString() ?? "Entrenamiento Inteligente",
+        ejercicios: ejercicios,
+      );
+
+      print("✅ Rutina IA cargada con éxito");
+    } catch (e) {
+      print("❌ Error generando rutina IA: $e");
+      // Si falla, silenciosamente nos quedamos con el fallback
+    } finally {
+      isGeneratingRoutine = false;
+      notifyListeners();
+    }
+  }
+
+  // --- Tu lógica original como respaldo (Fallback) ---
+  RutinaDia _getRutinaHardcodedFallback() {
+    String enfoque = "Entrenamiento Personal (Básico)";
+    List<Ejercicio> ejercicios = [];
+
+    if (userGoal == "Ganar Músculo") {
+      enfoque = "Fuerza Básica";
+      ejercicios = [
+        Ejercicio(
+          nombre: "Push-ups",
+          descanso: "60s",
+          repeticionesPorEdad: {"20s": 15, "30s": 12, "40s_mas": 10},
+        ),
+        Ejercicio(
+          nombre: "Sentadillas",
+          descanso: "60s",
+          repeticionesPorEdad: {"20s": 20, "30s": 15, "40s_mas": 12},
+        ),
+      ];
+    } else {
+      enfoque = "Cardio Básico";
+      ejercicios = [
+        Ejercicio(
+          nombre: "Jumping Jacks",
+          descanso: "30s",
+          repeticionesPorEdad: {"20s": 50, "30s": 40, "40s_mas": 30},
+        ),
+        Ejercicio(
+          nombre: "Burpees",
+          descanso: "45s",
+          repeticionesPorEdad: {"20s": 10, "30s": 8, "40s_mas": 6},
+        ),
+      ];
+    }
+
+    return RutinaDia(dia: 0, enfoque: enfoque, ejercicios: ejercicios);
+  }
+
+  // --- Métodos de Carga de Datos (JSON Local) ---
   Future<void> loadData() async {
     await _loadPreferences();
     try {
@@ -164,7 +181,7 @@ class DataProvider with ChangeNotifier {
       isLoading = false;
       notifyListeners();
     } catch (e) {
-      print("❌ Error cargando datos: $e");
+      print("❌ Error cargando datos locales: $e");
       isLoading = false;
       notifyListeners();
     }
@@ -187,23 +204,20 @@ class DataProvider with ChangeNotifier {
           }
           if (data.containsKey('name')) userName = data['name'];
           if (data.containsKey('age')) userAge = data['age'];
-          if (data.containsKey('goal')) userGoal = data['goal']; // Cargar Meta
-          if (data.containsKey('gender'))
-            userGender = data['gender']; // Cargar Genero
+          if (data.containsKey('goal')) userGoal = data['goal'];
+          if (data.containsKey('gender')) userGender = data['gender'];
         }
       } catch (e) {
         print("Error sync Firebase: $e");
       }
     }
-
     userName = prefs.getString('userName') ?? userName;
     userAge = prefs.getInt('userAge') ?? userAge;
     userGoal = prefs.getString('userGoal') ?? userGoal;
     userLevel = prefs.getString('userLevel') ?? userLevel;
-    userGender = prefs.getString('userGender') ?? userGender; // Cargar local
+    userGender = prefs.getString('userGender') ?? userGender;
     currentDay = prefs.getInt('currentDay') ?? currentDay;
     waterGlasses = prefs.getInt('waterGlasses') ?? 0;
-
     notifyListeners();
   }
 
@@ -219,14 +233,12 @@ class DataProvider with ChangeNotifier {
     userLevel = level;
     userAge = age;
     userGender = gender;
-
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userName', name);
     await prefs.setString('userGoal', goal);
     await prefs.setString('userLevel', level);
     await prefs.setInt('userAge', age);
     await prefs.setString('userGender', gender);
-
     notifyListeners();
   }
 

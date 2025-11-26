@@ -1,5 +1,6 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../models/user.model.dart'; // Asegúrate de importar tu modelo
 
 class GeminiService {
   late GenerativeModel _model;
@@ -8,66 +9,79 @@ class GeminiService {
 
   GeminiService() {
     final apiKey = dotenv.env['GEMINI_API_KEY'] ?? "";
-    if (apiKey.isEmpty) {
-      print("❌ ERROR: No se encontró GEMINI_API_KEY en el archivo .env");
-    }
-    // Usamos gemini-1.5-flash por velocidad y costo
+    // Usamos flash por velocidad y eficiencia
     _model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
   }
 
-  // Inicialización ligera: Solo define la personalidad, NO carga todos los datos aún
   Future<void> initializeContext() async {
     if (_isInitialized) return;
 
+    // Aquí puedes añadir el prompt de sistema para el Chatbot si lo necesitas
+    // _chat = _model.startChat(...)
+
+    _isInitialized = true;
+  }
+
+  // --- NUEVA FUNCIÓN: Generador de JSON Estructurado ---
+  Future<String> generateRoutineJson(UserProfile user) async {
+    final prompt =
+        """
+    Actúa como un entrenador personal de élite. Crea una rutina de ejercicios para HOY en formato JSON.
+    
+    PERFIL USUARIO:
+    - Nivel: ${user.level}
+    - Objetivo: ${user.goal}
+    - Edad: ${user.age}
+    - Género: ${user.gender}
+    - Grasa Corporal Estimada: ${user.bodyFatPercentage.toStringAsFixed(1)}%
+
+    REGLAS DE RESPUESTA:
+    1. Responde ÚNICAMENTE con un JSON válido. Sin markdown, sin explicaciones previas.
+    2. La estructura debe ser EXACTAMENTE así:
+    {
+      "dia": ${user.currentDay},
+      "enfoque": "Texto corto (ej: Pierna y Glúteo)",
+      "ejercicios": [
+        {
+          "nombre": "Nombre Ejercicio",
+          "descanso": "ej: 60 seg",
+          "nota": "Tip técnico breve",
+          "repeticiones": { "standard": "ej: 4 series de 12 reps" }
+        }
+      ]
+    }
+    3. Genera entre 5 y 6 ejercicios adaptados perfectamente al nivel y objetivo.
+    """;
+
     try {
-      final systemPrompt = """
-      Eres FitAI, el entrenador personal virtual de la app BioSync.
-      Tu tono es motivador, energético, breve y directo.
-      Responderás preguntas sobre rutinas de ejercicio y nutrición basándote en el contexto que se te proveerá en cada mensaje.
-      Si no tienes información sobre algo específico en el contexto proporcionado, ofrece un consejo general pero aclara que no está en el plan específico.
-      """;
+      final response = await _model.generateContent([Content.text(prompt)]);
+      String? text = response.text;
 
-      _chat = _model.startChat(
-        history: [
-          Content.text(systemPrompt),
-          Content.model([
-            TextPart(
-              "¡Entendido! Soy FitAI, listo para ayudar. ¿Cuál es el estado actual del usuario?",
-            ),
-          ]),
-        ],
-      );
+      // Limpieza de formato por si Gemini responde con bloques de código ```json
+      if (text != null) {
+        text = text.replaceAll('```json', '').replaceAll('```', '').trim();
+      }
 
-      _isInitialized = true;
-      print("✅ FitAI Inicializado (Modo Optimizado)");
+      return text ?? "{}";
     } catch (e) {
-      print("❌ Error cargando contexto de IA: $e");
+      print("❌ Error Gemini JSON: $e");
+      return "{}";
     }
   }
 
-  // Enviamos mensaje + contexto del día específico (Inyección Dinámica)
+  // Tu función de chat existente (para la pantalla de Chat)
   Future<String> sendMessage(String message, {String? dailyContext}) async {
-    if (_chat == null) await initializeContext();
-
+    // Inicialización simple si no existe chat
+    _chat ??= _model.startChat();
     try {
-      // Construimos un prompt combinado
       String finalPrompt = message;
-
-      if (dailyContext != null && dailyContext.isNotEmpty) {
-        finalPrompt =
-            """
-        [CONTEXTO ACTUAL DEL USUARIO]
-        $dailyContext
-        -----------------------------
-        [PREGUNTA DEL USUARIO]
-        $message
-        """;
+      if (dailyContext != null) {
+        finalPrompt = "Contexto:\n$dailyContext\n\nMensaje: $message";
       }
-
       final response = await _chat!.sendMessage(Content.text(finalPrompt));
-      return response.text ?? "No pude generar una respuesta.";
+      return response.text ?? "No pude responder.";
     } catch (e) {
-      return "Error de conexión con FitAI. Verifica tu internet. ($e)";
+      return "Error de conexión: $e";
     }
   }
 }
