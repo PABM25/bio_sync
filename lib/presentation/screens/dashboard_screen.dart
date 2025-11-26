@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/data_provider.dart';
-import '../widgets/daily_summary_card.dart'; // Asegúrate de tener este widget creado
+import '../widgets/daily_summary_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -11,11 +11,17 @@ class DashboardScreen extends StatelessWidget {
     final data = Provider.of<DataProvider>(context);
     final rutina = data.rutinaHoy;
 
-    // Cálculo del porcentaje (asegurando que no pase de 1.0)
+    // Detectamos el modo oscuro para ajustar textos
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
+
+    // Cálculo del porcentaje
     double progress = (data.currentDay / 45).clamp(0.0, 1.0);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
+      // CORRECCIÓN: Usamos el color del tema, no uno fijo
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: data.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -27,13 +33,13 @@ class DashboardScreen extends StatelessWidget {
 
                   Text(
                     "Hola, ${data.userName} 👋",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
+                      color: textColor, // Color dinámico
                     ),
                   ),
 
-                  // Texto del día
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -48,7 +54,7 @@ class DashboardScreen extends StatelessWidget {
                       Text(
                         "${(progress * 100).toStringAsFixed(0)}%",
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: subTextColor, // Color dinámico
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -57,46 +63,54 @@ class DashboardScreen extends StatelessWidget {
 
                   const SizedBox(height: 8),
 
-                  // --- MEJORA 4: BARRA DE PROGRESO ---
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: LinearProgressIndicator(
                       value: progress,
                       minHeight: 12,
-                      backgroundColor: Colors.grey[300],
+                      // Fondo de la barra más oscuro en modo dark
+                      backgroundColor: isDark
+                          ? Colors.grey[800]
+                          : Colors.grey[300],
                       color: const Color(0xFF8B5CF6),
                     ),
                   ),
 
-                  // -----------------------------------
                   const SizedBox(height: 25),
 
-                  // Tarjeta Resumen (Widget separado)
                   DailySummaryCard(
                     enfoque: rutina?.enfoque ?? "Descanso / Fin del Reto",
                     cantidadEjercicios: rutina?.ejercicios.length ?? 0,
                   ),
 
                   const SizedBox(height: 25),
-                  const Text(
+                  Text(
                     "Rutina de Hoy",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                    ),
                   ),
                   const SizedBox(height: 15),
 
                   if (rutina != null)
                     ...rutina.ejercicios.map(
                       (ejercicio) => _buildExerciseItem(
+                        context, // Pasamos contexto para temas
                         ejercicio.nombre,
                         ejercicio.descanso,
                         ejercicio.getDetalleParaUsuario(data.grupoEdadUsuario),
                       ),
                     )
                   else
-                    const Center(
+                    Center(
                       child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Text("¡Felicidades! Has completado el reto."),
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          "¡Felicidades! Has completado el reto.",
+                          style: TextStyle(color: textColor),
+                        ),
                       ),
                     ),
 
@@ -109,13 +123,18 @@ class DashboardScreen extends StatelessWidget {
                         data.completeDay();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text("¡Día completado! Sigue así 💪"),
+                            content: Text(
+                              "¡Día completado! Progreso guardado ☁️",
+                            ),
                             backgroundColor: Colors.green,
                           ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black87,
+                        // Botón se adapta ligeramente
+                        backgroundColor: isDark
+                            ? const Color(0xFF8B5CF6)
+                            : Colors.black87,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
@@ -132,13 +151,25 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExerciseItem(String name, String descanso, String detalle) {
+  Widget _buildExerciseItem(
+    BuildContext context,
+    String name,
+    String descanso,
+    String detalle,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
     return Card(
       elevation: 0,
+      color: cardColor, // Color de tarjeta dinámico
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(
+          color: isDark ? Colors.transparent : Colors.grey.shade200,
+        ),
       ),
       child: ListTile(
         leading: CircleAvatar(
@@ -151,21 +182,32 @@ class DashboardScreen extends StatelessWidget {
         ),
         title: Text(
           name,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: textColor,
+          ),
         ),
         subtitle: Text(
           "Descanso: $descanso",
-          style: TextStyle(color: Colors.grey[600], fontSize: 12),
+          style: TextStyle(
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            fontSize: 12,
+          ),
         ),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: isDark ? const Color(0xFF2C2C2C) : Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
             detalle,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+              color: textColor,
+            ),
           ),
         ),
       ),

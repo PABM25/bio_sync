@@ -11,12 +11,16 @@ class ExerciseScreen extends StatelessWidget {
     final rutina = data.rutinaHoy;
     final grupoEdad = data.grupoEdadUsuario;
 
+    // Detectar tema
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
     if (data.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor, // CORRECCIÓN
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -25,7 +29,6 @@ class ExerciseScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
-              // Encabezado
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -40,11 +43,12 @@ class ExerciseScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Text(
+                      Text(
                         "Entrenamiento",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
+                          color: textColor, // Dinámico
                         ),
                       ),
                     ],
@@ -52,7 +56,6 @@ class ExerciseScreen extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.refresh, color: Colors.grey),
                     onPressed: () {
-                      // Reseteo opcional para pruebas
                       data.resetProgress();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Progreso reiniciado")),
@@ -64,7 +67,6 @@ class ExerciseScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Tarjeta de Enfoque
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -102,13 +104,16 @@ class ExerciseScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 30),
-              const Text(
+              Text(
                 "Tu Rutina Completa",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
               const SizedBox(height: 16),
 
-              // --- MEJORA 6: CHECKLIST INTERACTIVO ---
               if (rutina != null && rutina.ejercicios.isNotEmpty)
                 ListView.builder(
                   shrinkWrap: true,
@@ -116,7 +121,6 @@ class ExerciseScreen extends StatelessWidget {
                   itemCount: rutina.ejercicios.length,
                   itemBuilder: (context, index) {
                     final ex = rutina.ejercicios[index];
-                    // Usamos el widget personalizado que definimos abajo
                     return ExerciseCheckboxItem(
                       nombre: ex.nombre,
                       detalle: ex.getDetalleParaUsuario(grupoEdad),
@@ -125,12 +129,15 @@ class ExerciseScreen extends StatelessWidget {
                   },
                 )
               else
-                const Center(child: Text("No hay ejercicios hoy")),
+                Center(
+                  child: Text(
+                    "No hay ejercicios hoy",
+                    style: TextStyle(color: textColor),
+                  ),
+                ),
 
-              // ---------------------------------------
               const SizedBox(height: 30),
 
-              // Botón Completar
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -145,7 +152,9 @@ class ExerciseScreen extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black87,
+                    backgroundColor: isDark
+                        ? const Color(0xFF8B5CF6)
+                        : Colors.black87,
                     foregroundColor: Colors.white,
                     elevation: 4,
                     shape: RoundedRectangleBorder(
@@ -167,7 +176,7 @@ class ExerciseScreen extends StatelessWidget {
   }
 }
 
-// --- WIDGET INTERACTIVO PARA EL CHECKLIST ---
+// --- WIDGET CHECKLIST ADAPTADO ---
 class ExerciseCheckboxItem extends StatefulWidget {
   final String nombre;
   final String detalle;
@@ -189,20 +198,28 @@ class _ExerciseCheckboxItemState extends State<ExerciseCheckboxItem> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: _isDone ? Colors.green.withOpacity(0.05) : Colors.white,
+        // Color dinámico según estado y tema
+        color: _isDone ? Colors.green.withOpacity(0.1) : cardColor,
         borderRadius: BorderRadius.circular(16),
         border: _isDone
             ? Border.all(color: Colors.green.withOpacity(0.5))
-            : null,
+            : isDark
+            ? null
+            : Border.all(color: Colors.transparent),
         boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
+          if (!isDark)
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
         ],
       ),
       child: ListTile(
@@ -231,24 +248,26 @@ class _ExerciseCheckboxItemState extends State<ExerciseCheckboxItem> {
             fontWeight: FontWeight.bold,
             fontSize: 16,
             decoration: _isDone ? TextDecoration.lineThrough : null,
-            color: _isDone ? Colors.grey : Colors.black87,
+            color: _isDone ? Colors.grey : textColor,
           ),
         ),
         subtitle: Text(
           "Descanso: ${widget.descanso}",
-          style: TextStyle(color: Colors.grey[500], fontSize: 12),
+          style: TextStyle(color: Colors.grey, fontSize: 12),
         ),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: _isDone ? Colors.green.withOpacity(0.1) : Colors.grey[100],
+            color: _isDone
+                ? Colors.green.withOpacity(0.1)
+                : (isDark ? const Color(0xFF2C2C2C) : Colors.grey[100]),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             widget.detalle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: _isDone ? Colors.green : Colors.black87,
+              color: _isDone ? Colors.green : textColor,
               fontSize: 12,
             ),
           ),

@@ -15,12 +15,17 @@ class NutritionScreen extends StatelessWidget {
     final dayName = DateFormat('EEEE', 'es_ES').format(now);
     final dateStr = DateFormat('d MMMM yyyy', 'es_ES').format(now);
 
+    // Detectar tema
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subTextColor = Colors.grey[600];
+
     if (data.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor, // CORRECCIÓN
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -31,24 +36,28 @@ class NutritionScreen extends StatelessWidget {
                 dayName.toUpperCase(),
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey[600],
+                  color: subTextColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 dateStr,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
               const SizedBox(height: 20),
 
-              // --- NUEVO: TRACKER DE HIDRATACIÓN ---
+              // TRACKER DE HIDRATACIÓN
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.blue[50],
+                  // Hacemos el azul más oscuro en modo dark para que no brille tanto
+                  color: isDark
+                      ? const Color(0xFF1A237E).withOpacity(0.3)
+                      : Colors.blue[50],
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.blue.withOpacity(0.3)),
                 ),
@@ -57,28 +66,28 @@ class NutritionScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Icon(Icons.water_drop, color: Colors.blue),
-                            SizedBox(width: 10),
+                            const Icon(Icons.water_drop, color: Colors.blue),
+                            const SizedBox(width: 10),
                             Text(
                               "Hidratación",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.blue,
+                                color: isDark ? Colors.blue[200] : Colors.blue,
                               ),
                             ),
                           ],
                         ),
                         Text(
                           "${data.waterGlasses}/8 Vasos",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
+                            color: textColor,
                           ),
                         ),
-                        // Botón pequeño para resetear si se equivocan
                         if (data.waterGlasses > 0)
                           GestureDetector(
                             onTap: () => data.resetWater(),
@@ -124,12 +133,15 @@ class NutritionScreen extends StatelessWidget {
                 ),
               ),
 
-              // -------------------------------------
               const SizedBox(height: 30),
 
-              const Text(
+              Text(
                 "Tu Menú de Hoy",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -141,24 +153,28 @@ class NutritionScreen extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       _buildModernMealCard(
+                        context,
                         "Desayuno",
                         dieta.comidas.desayuno,
                         Icons.breakfast_dining,
                         Colors.orange,
                       ),
                       _buildModernMealCard(
+                        context,
                         "Almuerzo",
                         dieta.comidas.almuerzo,
                         Icons.lunch_dining,
                         Colors.green,
                       ),
                       _buildModernMealCard(
+                        context,
                         "Cena",
                         dieta.comidas.cena,
                         Icons.dinner_dining,
                         Colors.blueGrey,
                       ),
                       _buildModernMealCard(
+                        context,
                         "Colación",
                         dieta.comidas.colacion,
                         Icons.apple,
@@ -168,7 +184,12 @@ class NutritionScreen extends StatelessWidget {
                   ),
                 ),
               ] else
-                const Center(child: Text("No hay datos para hoy")),
+                Center(
+                  child: Text(
+                    "No hay datos para hoy",
+                    style: TextStyle(color: textColor),
+                  ),
+                ),
 
               const SizedBox(height: 80),
             ],
@@ -179,23 +200,29 @@ class NutritionScreen extends StatelessWidget {
   }
 
   Widget _buildModernMealCard(
+    BuildContext context,
     String mealType,
     String foodName,
     IconData icon,
     Color color,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
     return Container(
       width: 200,
       margin: const EdgeInsets.only(right: 16, bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor, // Color dinámico
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
+          if (!isDark)
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
         ],
       ),
       child: Column(
@@ -230,9 +257,10 @@ class NutritionScreen extends StatelessWidget {
                   foodName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: textColor, // Dinámico
                   ),
                 ),
               ],
