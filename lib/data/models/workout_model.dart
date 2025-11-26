@@ -25,10 +25,13 @@ class RutinaDia {
 
 class Ejercicio {
   final String nombre;
-  final String descanso;
+  final String descanso; // ej: "30" (solo números preferiblemente)
   final String? nota;
+  final String? imageUrl; // NUEVO: URL de GIF o imagen
+  final bool esPorTiempo; // NUEVO: Para saber si usar cronómetro
+  final int duracionSegundos; // NUEVO
 
-  // Nuevas variables para manejar lógica por edad
+  // Mapas por edad (los mantenemos)
   final Map<String, dynamic>? repeticionesPorEdad;
   final Map<String, dynamic>? duracionPorEdad;
 
@@ -36,16 +39,27 @@ class Ejercicio {
     required this.nombre,
     required this.descanso,
     this.nota,
+    this.imageUrl,
+    this.esPorTiempo = false,
+    this.duracionSegundos = 0,
     this.repeticionesPorEdad,
     this.duracionPorEdad,
   });
 
   factory Ejercicio.fromJson(Map<String, dynamic> json) {
+    // Lógica simple para detectar si es por tiempo
+    bool porTiempo = json.containsKey('duracion') || json['tipo'] == 'tiempo';
+
     return Ejercicio(
       nombre: json['nombre'] ?? "Ejercicio",
-      descanso: json['descanso'] ?? "30 seg",
+      descanso:
+          json['descanso']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ??
+          "30",
       nota: json['nota'],
-      // Guardamos los mapas completos en lugar de un string fijo
+      imageUrl:
+          json['gif_url'], // Asegúrate de agregar esto a tu JSON o usar placeholders
+      esPorTiempo: porTiempo,
+      duracionSegundos: 60, // Valor por defecto o parsear del JSON
       repeticionesPorEdad: json['repeticiones'] is Map
           ? json['repeticiones']
           : null,
@@ -53,23 +67,12 @@ class Ejercicio {
     );
   }
 
-  // Este es el método que reemplaza a ".detalle"
   String getDetalleParaUsuario(String grupoEdad) {
-    // grupoEdad viene del DataProvider (ej: "20s", "30s", "40s_mas")
-
-    // 1. Prioridad: Duración (tiempo)
-    if (duracionPorEdad != null) {
-      var val = duracionPorEdad![grupoEdad] ?? duracionPorEdad!.values.first;
+    if (esPorTiempo) {
+      var val = duracionPorEdad?[grupoEdad] ?? "60s";
       return val.toString();
     }
-
-    // 2. Prioridad: Repeticiones
-    if (repeticionesPorEdad != null) {
-      var val =
-          repeticionesPorEdad![grupoEdad] ?? repeticionesPorEdad!.values.first;
-      return "$val reps";
-    }
-
-    return "Libre";
+    var val = repeticionesPorEdad?[grupoEdad] ?? "12";
+    return "$val reps";
   }
 }

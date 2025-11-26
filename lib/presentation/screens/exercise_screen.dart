@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/data_provider.dart';
 import '../providers/auth_provider.dart';
 import 'challenge_screen.dart'; // Reutilizamos el widget checkbox
+import 'workout_player_screen.dart'; // <--- IMPORTANTE: Tu nueva pantalla
 
 class ExerciseScreen extends StatefulWidget {
   const ExerciseScreen({super.key});
@@ -34,6 +35,34 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      // --- NUEVO: BOTÓN FLOTANTE ESTILO FREELETICS ---
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color(0xFF8B5CF6),
+        icon: const Icon(Icons.play_arrow, color: Colors.white),
+        label: const Text(
+          "INICIAR RUTINA",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        onPressed: () {
+          if (rutina.ejercicios.isNotEmpty) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => WorkoutPlayerScreen(rutina: rutina.ejercicios),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Espera a que se genere la rutina..."),
+              ),
+            );
+          }
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
+      // ----------------------------------------------
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -137,24 +166,18 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                   itemCount: rutina.ejercicios.length,
                   itemBuilder: (context, index) {
                     final ex = rutina.ejercicios[index];
-
-                    // CORRECCIÓN AQUÍ: Usamos toString() para evitar el error de int vs String
-                    dynamic rawValue =
-                        ex.repeticionesPorEdad?['20s'] ??
-                        ex.repeticionesPorEdad?['30s'] ??
-                        ex.repeticionesPorEdad?['40s_mas'] ??
-                        ex.descanso;
-
-                    String detalle = rawValue.toString();
-
                     return ExerciseCheckboxItem(
                       nombre: ex.nombre,
-                      detalle: detalle,
+                      detalle: ex.getDetalleParaUsuario(
+                        data.grupoEdadUsuario,
+                      ), // Usamos el nuevo método del modelo
                       descanso: ex.descanso,
                     );
                   },
                 ),
-              const SizedBox(height: 40),
+              const SizedBox(
+                height: 80,
+              ), // Espacio extra para el botón flotante
             ],
           ),
         ),
