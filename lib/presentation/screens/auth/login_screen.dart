@@ -141,11 +141,20 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // --- BOTÓN GOOGLE CONECTADO ---
+                  // --- BOTÓN GOOGLE CON FEEDBACK ---
                   _socialButton(
                     icon: Icons.g_mobiledata,
                     color: Colors.red,
                     onTap: () async {
+                      // Feedback visual inmediato
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Conectando con Google..."),
+                          backgroundColor: Colors.blueGrey,
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+
                       final error = await authProvider.signInWithGoogle();
                       if (error != null && mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -155,7 +164,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         );
                       }
-                      // Si error es null, AuthWrapper redirigirá automáticamente
                     },
                   ),
                   _socialButton(
@@ -233,7 +241,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Widget actualizado para aceptar onTap
   Widget _socialButton({
     required IconData icon,
     required Color color,

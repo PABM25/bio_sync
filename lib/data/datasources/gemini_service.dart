@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../models/user.model.dart'; // Asegúrate de importar tu modelo
+import '../models/user.model.dart';
 
 class GeminiService {
   late GenerativeModel _model;
@@ -15,15 +16,14 @@ class GeminiService {
 
   Future<void> initializeContext() async {
     if (_isInitialized) return;
-
-    // Aquí puedes añadir el prompt de sistema para el Chatbot si lo necesitas
-    // _chat = _model.startChat(...)
-
     _isInitialized = true;
   }
 
-  // --- NUEVA FUNCIÓN: Generador de JSON Estructurado ---
-  Future<String> generateRoutineJson(UserProfile user) async {
+  // --- FUNCIÓN MEJORADA: Con Reintentos y Validación JSON ---
+  Future<String> generateRoutineJson(
+    UserProfile user, {
+    int attempts = 2,
+  }) async {
     final prompt =
         """
     Actúa como un entrenador personal de élite. Crea una rutina de ejercicios para HOY en formato JSON.
@@ -53,25 +53,32 @@ class GeminiService {
     3. Genera entre 5 y 6 ejercicios adaptados perfectamente al nivel y objetivo.
     """;
 
-    try {
-      final response = await _model.generateContent([Content.text(prompt)]);
-      String? text = response.text;
+    for (int i = 0; i < attempts; i++) {
+      try {
+        print("🤖 Solicitando rutina a Gemini (Intento ${i + 1})...");
+        final response = await _model.generateContent([Content.text(prompt)]);
+        String? text = response.text;
 
-      // Limpieza de formato por si Gemini responde con bloques de código ```json
-      if (text != null) {
-        text = text.replaceAll('```json', '').replaceAll('```', '').trim();
+        if (text != null) {
+          // Limpieza de formato (eliminar ```json ... ```)
+          text = text.replaceAll('```json', '').replaceAll('```', '').trim();
+
+          // VALIDACIÓN: Intentamos decodificar. Si falla, lanzará excepción y probará de nuevo.
+          jsonDecode(text);
+
+          return text; // Si llegamos aquí, es un JSON válido
+        }
+      } catch (e) {
+        print("⚠️ Error en intento ${i + 1}: $e");
+        // Si es el último intento, devolvemos JSON vacío para activar el fallback
+        if (i == attempts - 1) return "{}";
       }
-
-      return text ?? "{}";
-    } catch (e) {
-      print("❌ Error Gemini JSON: $e");
-      return "{}";
     }
+    return "{}";
   }
 
-  // Tu función de chat existente (para la pantalla de Chat)
+  // Función de chat
   Future<String> sendMessage(String message, {String? dailyContext}) async {
-    // Inicialización simple si no existe chat
     _chat ??= _model.startChat();
     try {
       String finalPrompt = message;

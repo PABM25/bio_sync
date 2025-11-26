@@ -7,8 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../data/models/workout_model.dart';
 import '../../data/models/diet_model.dart';
-import '../../data/models/user.model.dart'; // Importa UserProfile
-import '../../data/datasources/gemini_service.dart'; // Importa el servicio
+import '../../data/models/user.model.dart';
+import '../../data/datasources/gemini_service.dart';
 
 class DataProvider with ChangeNotifier {
   // Servicios
@@ -38,7 +38,7 @@ class DataProvider with ChangeNotifier {
     if (_rutinaIAGenerada != null) {
       return _rutinaIAGenerada!;
     }
-    return _getRutinaHardcodedFallback(); // Tu lógica antigua como respaldo
+    return _getRutinaHardcodedFallback();
   }
 
   // Getter para el reto de 45 días (JSON local)
@@ -66,24 +66,24 @@ class DataProvider with ChangeNotifier {
     return "40s_mas";
   }
 
-  // --- NUEVO: Generar Rutina con IA (CORREGIDO) ---
+  // --- Generar Rutina con IA ---
   Future<void> generarRutinaIA(UserProfile user) async {
-    if (_rutinaIAGenerada != null)
-      return; // Evitar re-generar si ya tenemos una para esta sesión
+    if (_rutinaIAGenerada != null) return;
 
     isGeneratingRoutine = true;
     notifyListeners();
 
     try {
       print("🤖 Solicitando rutina a Gemini...");
+      // Llamamos al servicio mejorado que incluye reintentos y limpieza
       final jsonString = await _geminiService.generateRoutineJson(user);
+
+      if (jsonString == "{}") throw Exception("Respuesta vacía de IA");
+
       final Map<String, dynamic> jsonData = json.decode(jsonString);
 
-      // Transformamos el JSON de Gemini a tu modelo RutinaDia
-      // FIX: Usamos .toString() en TODOS los campos para evitar errores de tipo int vs String
       List<Ejercicio> ejercicios = (jsonData['ejercicios'] as List).map((e) {
-        // Extraemos el valor de repetición de forma segura
-        String repeticionValor = "10 reps"; // Valor por defecto
+        String repeticionValor = "10 reps";
         if (e['repeticiones'] != null &&
             e['repeticiones']['standard'] != null) {
           repeticionValor = e['repeticiones']['standard'].toString();
@@ -93,7 +93,6 @@ class DataProvider with ChangeNotifier {
           nombre: e['nombre']?.toString() ?? "Ejercicio IA",
           descanso: e['descanso']?.toString() ?? "30s",
           nota: e['nota']?.toString(),
-          // Truco: Guardamos el valor estándar en todas las claves de edad
           repeticionesPorEdad: {
             "20s": repeticionValor,
             "30s": repeticionValor,
@@ -113,14 +112,13 @@ class DataProvider with ChangeNotifier {
       print("✅ Rutina IA cargada con éxito");
     } catch (e) {
       print("❌ Error generando rutina IA: $e");
-      // Si falla, silenciosamente nos quedamos con el fallback
     } finally {
       isGeneratingRoutine = false;
       notifyListeners();
     }
   }
 
-  // --- Tu lógica original como respaldo (Fallback) ---
+  // --- Fallback (Respaldo) ---
   RutinaDia _getRutinaHardcodedFallback() {
     String enfoque = "Entrenamiento Personal (Básico)";
     List<Ejercicio> ejercicios = [];
@@ -131,12 +129,13 @@ class DataProvider with ChangeNotifier {
         Ejercicio(
           nombre: "Push-ups",
           descanso: "60s",
-          repeticionesPorEdad: {"20s": 15, "30s": 12, "40s_mas": 10},
+          // CORRECCIÓN: Valores como String ("15" en vez de 15)
+          repeticionesPorEdad: {"20s": "15", "30s": "12", "40s_mas": "10"},
         ),
         Ejercicio(
           nombre: "Sentadillas",
           descanso: "60s",
-          repeticionesPorEdad: {"20s": 20, "30s": 15, "40s_mas": 12},
+          repeticionesPorEdad: {"20s": "20", "30s": "15", "40s_mas": "12"},
         ),
       ];
     } else {
@@ -145,12 +144,12 @@ class DataProvider with ChangeNotifier {
         Ejercicio(
           nombre: "Jumping Jacks",
           descanso: "30s",
-          repeticionesPorEdad: {"20s": 50, "30s": 40, "40s_mas": 30},
+          repeticionesPorEdad: {"20s": "50", "30s": "40", "40s_mas": "30"},
         ),
         Ejercicio(
           nombre: "Burpees",
           descanso: "45s",
-          repeticionesPorEdad: {"20s": 10, "30s": 8, "40s_mas": 6},
+          repeticionesPorEdad: {"20s": "10", "30s": "8", "40s_mas": "6"},
         ),
       ];
     }
@@ -158,8 +157,16 @@ class DataProvider with ChangeNotifier {
     return RutinaDia(dia: 0, enfoque: enfoque, ejercicios: ejercicios);
   }
 
-  // --- Métodos de Carga de Datos (JSON Local) ---
+  // --- Métodos de Carga de Datos (OPTIMIZADO) ---
   Future<void> loadData() async {
+    // OPTIMIZACIÓN: Si ya tenemos datos, no recargamos los archivos pesados
+    if (_rutinaCompleta.isNotEmpty && _planNutricional.isNotEmpty) {
+      await _loadPreferences();
+      isLoading = false;
+      notifyListeners();
+      return;
+    }
+
     await _loadPreferences();
     try {
       final workoutString = await rootBundle.loadString(

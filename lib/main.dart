@@ -4,12 +4,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+// Importación para localización
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'firebase_options.dart';
 import 'presentation/providers/auth_provider.dart';
 import 'presentation/providers/chat_provider.dart';
 import 'presentation/providers/data_provider.dart';
-import 'presentation/providers/theme_provider.dart'; // Asegúrate de tener este archivo creado
+import 'presentation/providers/theme_provider.dart';
 import 'presentation/screens/auth/login_screen.dart';
 import 'presentation/screens/main_layout.dart';
 import 'presentation/screens/onboarding_screen.dart';
@@ -49,6 +51,18 @@ class BioSyncApp extends StatelessWidget {
       // --- MODO DE TEMA (Sistema, Claro u Oscuro) ---
       themeMode: themeProvider.themeMode,
 
+      // --- CONFIGURACIÓN DE LOCALIZACIÓN (NUEVO) ---
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('es', 'ES'), // Español
+        Locale('en', 'US'), // Inglés
+      ],
+      // ---------------------------------------------
+
       // --- TEMA CLARO ---
       theme: ThemeData(
         useMaterial3: true,
@@ -63,7 +77,6 @@ class BioSyncApp extends StatelessWidget {
           foregroundColor: Colors.black,
           elevation: 0,
         ),
-        // CardTheme es la clase correcta en Flutter estándar
         cardTheme: CardThemeData(
           color: Colors.white,
           elevation: 0,

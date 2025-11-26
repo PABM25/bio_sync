@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/data_provider.dart';
-import '../providers/auth_provider.dart'; // Necesario para pasar el UserProfile
+import '../providers/auth_provider.dart';
 import 'challenge_screen.dart'; // Reutilizamos el widget checkbox
 
 class ExerciseScreen extends StatefulWidget {
@@ -15,13 +15,11 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   @override
   void initState() {
     super.initState();
-    // Disparamos la generación de rutina con IA apenas carga la pantalla
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final auth = Provider.of<AuthProvider>(context, listen: false);
       final data = Provider.of<DataProvider>(context, listen: false);
 
       if (auth.userProfile != null) {
-        // Llamamos a la función que conecta con Gemini
         data.generarRutinaIA(auth.userProfile!);
       }
     });
@@ -30,12 +28,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   @override
   Widget build(BuildContext context) {
     final data = Provider.of<DataProvider>(context);
-
-    // Usamos el getter inteligente que ya decide si mostrar IA o Fallback
     final rutina = data.rutinaPersonalizada;
-    // El getter en el modelo de ejercicio puede requerir un grupo de edad, aunque con IA ya viene el texto listo
-    // podemos pasar '20s' como default ya que la IA devuelve un solo valor 'standard'
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
 
@@ -72,7 +65,6 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                       ),
                     ],
                   ),
-                  // Indicador de carga específico de la IA
                   if (data.isGeneratingRoutine)
                     const SizedBox(
                       height: 20,
@@ -83,10 +75,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                     const Icon(Icons.auto_awesome, color: Color(0xFF8B5CF6)),
                 ],
               ),
-
               const SizedBox(height: 20),
-
-              // Tarjeta de Resumen / Enfoque
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -133,10 +122,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 30),
-
-              // Lista de Ejercicios
               if (data.isGeneratingRoutine && rutina.ejercicios.isEmpty)
                 const Center(
                   child: Padding(
@@ -151,12 +137,15 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                   itemCount: rutina.ejercicios.length,
                   itemBuilder: (context, index) {
                     final ex = rutina.ejercicios[index];
-                    // Para la IA, guardamos el detalle en la clave "20s" (o cualquier otra) dentro del mapa
-                    String detalle =
+
+                    // CORRECCIÓN AQUÍ: Usamos toString() para evitar el error de int vs String
+                    dynamic rawValue =
                         ex.repeticionesPorEdad?['20s'] ??
                         ex.repeticionesPorEdad?['30s'] ??
                         ex.repeticionesPorEdad?['40s_mas'] ??
                         ex.descanso;
+
+                    String detalle = rawValue.toString();
 
                     return ExerciseCheckboxItem(
                       nombre: ex.nombre,
@@ -165,7 +154,6 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                     );
                   },
                 ),
-
               const SizedBox(height: 40),
             ],
           ),
