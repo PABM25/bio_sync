@@ -1,249 +1,250 @@
 import 'package:flutter/material.dart';
-import 'package:openfoodfacts/openfoodfacts.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-import '../../data/datasources/food_service.dart';
-import '../widgets/macro_chart.dart';
+import 'package:provider/provider.dart';
+import '../providers/data_provider.dart';
 
-class NutritionScreen extends StatefulWidget {
+class NutritionScreen extends StatelessWidget {
   const NutritionScreen({super.key});
-  @override
-  State<NutritionScreen> createState() => _NutritionScreenState();
-}
-
-class _NutritionScreenState extends State<NutritionScreen> {
-  double _consumedCalories = 0;
-  final double _targetCalories = 2200;
-  double _carbs = 0, _protein = 0, _fat = 0;
-  List<Product> _breakfast = [], _lunch = [], _dinner = [];
-  final FoodService _foodService = FoodService();
-
-  void _openSearchModal(String mealType) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.9,
-        builder: (_, controller) => _SearchFoodModal(
-          scrollController: controller,
-          foodService: _foodService,
-          onAdd: (product) {
-            setState(() {
-              _consumedCalories += _foodService.getCalories(product);
-              _carbs +=
-                  product.nutriments?.getValue(
-                    Nutrient.carbohydrates,
-                    PerSize.serving,
-                  ) ??
-                  10;
-              _protein +=
-                  product.nutriments?.getValue(
-                    Nutrient.proteins,
-                    PerSize.serving,
-                  ) ??
-                  5;
-              _fat +=
-                  product.nutriments?.getValue(Nutrient.fat, PerSize.serving) ??
-                  2;
-              if (mealType == 'Desayuno') _breakfast.add(product);
-              if (mealType == 'Almuerzo') _lunch.add(product);
-              if (mealType == 'Cena') _dinner.add(product);
-            });
-            Navigator.pop(context);
-          },
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
+    final plan = dataProvider.nutritionalPlan;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (plan.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final info = plan['info_profesional'];
+    final req = plan['requerimiento_nutricional_diario'];
+    final indicaciones = plan['indicaciones_generales'] as List;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${_consumedCalories.toInt()} / ${_targetCalories.toInt()}",
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Text(
-                          "Kcal Consumidas",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        LinearPercentIndicator(
-                          lineHeight: 12.0,
-                          percent: (_consumedCalories / _targetCalories).clamp(
-                            0.0,
-                            1.0,
-                          ),
-                          progressColor: const Color(0xFF8B5CF6),
-                          barRadius: const Radius.circular(10),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: MacroChart(
-                      carbs: _carbs,
-                      protein: _protein,
-                      fat: _fat,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 30),
-              _buildMealSection("Desayuno", _breakfast, isDark),
-              _buildMealSection("Almuerzo", _lunch, isDark),
-              _buildMealSection("Cena", _dinner, isDark),
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text("Mi Pauta Nutricional"),
+        centerTitle: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-    );
-  }
-
-  Widget _buildMealSection(String title, List<Product> foods, bool isDark) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            // Tarjeta de Información Profesional
+            _buildInfoCard(context, info, req, isDark),
+            const SizedBox(height: 20),
+
+            // Indicaciones Generales
+            const Text(
+              "Indicaciones",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            IconButton(
-              icon: const Icon(Icons.add_circle, color: Color(0xFF8B5CF6)),
-              onPressed: () => _openSearchModal(title),
+            const SizedBox(height: 10),
+            ...indicaciones.map((ind) => _buildIndicationTile(ind, isDark)),
+
+            const SizedBox(height: 25),
+
+            // Menú Semanal (Expansion Tiles)
+            const Text(
+              "Menú Semanal",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            ...dataProvider.menuSemanal.map(
+              (dia) => _buildDayTile(dia, isDark),
+            ),
+
+            const SizedBox(height: 40),
+            Center(
+              child: Text(
+                "Registra tu consumo en Fitia",
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
             ),
           ],
         ),
-        if (foods.isEmpty)
-          const Text("Sin alimentos", style: TextStyle(color: Colors.grey))
-        else
-          ...foods.map(
-            (f) => ListTile(
-              title: Text(f.productName ?? "Comida"),
-              subtitle: Text("${_foodService.getCalories(f).toInt()} kcal"),
-            ),
-          ),
-        const Divider(),
-      ],
+      ),
     );
   }
-}
 
-class _SearchFoodModal extends StatefulWidget {
-  final ScrollController scrollController;
-  final FoodService foodService;
-  final Function(Product) onAdd;
-  const _SearchFoodModal({
-    required this.scrollController,
-    required this.foodService,
-    required this.onAdd,
-  });
-  @override
-  State<_SearchFoodModal> createState() => _SearchFoodModalState();
-}
-
-class _SearchFoodModalState extends State<_SearchFoodModal> {
-  final TextEditingController _controller = TextEditingController();
-  List<Product> _results = [];
-  bool _loading = false;
-
-  void _search() async {
-    if (_controller.text.isEmpty) return;
-    setState(() => _loading = true);
-    final res = await widget.foodService.searchFood(_controller.text);
-    setState(() {
-      _results = res;
-      _loading = false;
-    });
-  }
-
-  void _scanBarcode() async {
-    var res = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SimpleBarcodeScannerPage()),
-    );
-    if (res is String && res != '-1') {
-      setState(() => _loading = true);
-      final product = await widget.foodService.getProductByBarcode(res);
-      setState(() => _loading = false);
-      if (product != null) widget.onAdd(product);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildInfoCard(BuildContext context, Map info, Map req, bool isDark) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDark
+              ? [const Color(0xFF4A148C), const Color(0xFF7B1FA2)]
+              : [const Color(0xFF8B5CF6), const Color(0xFFA78BFA)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: "Buscar o escanear...",
-                suffixIcon: Row(
-                  mainAxisSize: MainAxisSize.min,
+          Row(
+            children: [
+              const Icon(
+                Icons.medical_services_outlined,
+                color: Colors.white,
+                size: 30,
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      onPressed: _scanBarcode,
+                    Text(
+                      info['nombre'],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: _search,
+                    Text(
+                      info['titulo'],
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
               ),
+            ],
+          ),
+          const Divider(color: Colors.white24, height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildMacroItem("Calorías", "${req['calorias_totales']}"),
+              _buildMacroItem(
+                "Proteínas",
+                "${req['macronutrientes']['proteinas']['gramos']}g",
+              ),
+              _buildMacroItem(
+                "Carbos",
+                "${req['macronutrientes']['carbohidratos']['gramos']}g",
+              ),
+              _buildMacroItem(
+                "Grasas",
+                "${req['macronutrientes']['lipidos']['gramos']}g",
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMacroItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIndicationTile(String text, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.check_circle_outline,
+            color: Color(0xFF8B5CF6),
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isDark ? Colors.grey[300] : Colors.grey[800],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDayTile(dynamic diaPlan, bool isDark) {
+    return Card(
+      elevation: 0,
+      color: isDark ? const Color(0xFF2C2C2C) : Colors.grey[100],
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: ExpansionTile(
+        title: Text(
+          diaPlan.dia,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF8B5CF6),
+          ),
+        ),
+        childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+        children: [
+          _buildMealRow("Desayuno", diaPlan.comidas.desayuno, isDark),
+          _buildMealRow("Almuerzo", diaPlan.comidas.almuerzo, isDark),
+          _buildMealRow("Colación", diaPlan.comidas.colacion, isDark),
+          _buildMealRow("Cena", diaPlan.comidas.cena, isDark),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMealRow(String label, String food, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 70,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+                color: isDark ? Colors.grey[400] : Colors.grey[700],
+              ),
             ),
           ),
           Expanded(
-            child: _loading
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    controller: widget.scrollController,
-                    itemCount: _results.length,
-                    itemBuilder: (ctx, i) {
-                      final p = _results[i];
-                      return ListTile(
-                        leading: p.imageFrontUrl != null
-                            ? Image.network(p.imageFrontUrl!, width: 40)
-                            : const Icon(Icons.fastfood),
-                        title: Text(p.productName ?? "Sin nombre"),
-                        subtitle: Text(
-                          "${widget.foodService.getCalories(p).toInt()} kcal",
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.add, color: Colors.green),
-                          onPressed: () => widget.onAdd(p),
-                        ),
-                      );
-                    },
-                  ),
+            child: Text(
+              food,
+              style: TextStyle(
+                fontSize: 14,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
           ),
         ],
       ),

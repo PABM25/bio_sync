@@ -49,11 +49,9 @@ dependencies:
   shared_preferences: ^2.2.2
   flutter_tts: ^3.8.3
   percent_indicator: ^4.2.3
-  openfoodfacts: ^3.4.1
   confetti: ^0.7.0
   health: 13.2.1
   permission_handler: ^11.3.1
-  simple_barcode_scanner: ^0.0.8
 
 
 dev_dependencies:

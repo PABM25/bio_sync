@@ -76,10 +76,11 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
         setState(() => _timeLeft--);
       } else {
         _timer?.cancel();
-        if (_isResting)
+        if (_isResting) {
           _nextExercise();
-        else
+        } else {
           _startRest();
+        }
       }
     });
   }
@@ -181,7 +182,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
                         center: Text(
                           _isResting || ejercicio.esPorTiempo
                               ? "$_timeLeft"
-                              : "${ejercicio.getDetalleParaUsuario("30s")}",
+                              : ejercicio.getDetalleParaUsuario("30s"),
                           style: const TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
@@ -215,10 +216,11 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             _timer?.cancel();
-                            if (_isResting)
+                            if (_isResting) {
                               _nextExercise();
-                            else
+                            } else {
                               _startRest();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _accentColor,

@@ -26,14 +26,18 @@ class DataProvider with ChangeNotifier {
   int waterGlasses = 0;
 
   // Rutinas
-  RutinaDia? _rutinaIAGenerada; // Aquí guardamos la respuesta de la IA
-  List<RutinaDia> _rutinaCompleta = []; // Rutina del JSON local (Reto 45)
-  List<PlanDiario> _planNutricional = []; // Dieta del JSON local
+  RutinaDia? _rutinaIAGenerada;
+  List<RutinaDia> _rutinaCompleta = [];
+
+  // NUTRICIÓN: Datos completos del JSON
+  Map<String, dynamic> _fullNutritionalPlan = {};
+  List<PlanDiario> _menuSemanal = [];
 
   bool isLoading = true;
-  bool isGeneratingRoutine = false; // Estado para carga de IA
+  bool isGeneratingRoutine = false;
 
-  // Getter inteligente: Devuelve IA si existe, sino Fallback
+  // --- GETTERS ---
+
   RutinaDia get rutinaPersonalizada {
     if (_rutinaIAGenerada != null) {
       return _rutinaIAGenerada!;
@@ -41,7 +45,6 @@ class DataProvider with ChangeNotifier {
     return _getRutinaHardcodedFallback();
   }
 
-  // Getter para el reto de 45 días (JSON local)
   RutinaDia? get rutinaRetoHoy {
     if (_rutinaCompleta.isEmpty) return null;
     return _rutinaCompleta.firstWhere(
@@ -50,14 +53,19 @@ class DataProvider with ChangeNotifier {
     );
   }
 
-  // Getter para la dieta
+  // Getter para acceder a toda la info del JSON (Profesional, Metas, etc.)
+  Map<String, dynamic> get nutritionalPlan => _fullNutritionalPlan;
+
+  // Getter para el menú (Lista de objetos)
+  List<PlanDiario> get menuSemanal => _menuSemanal;
+
   PlanDiario? get dietaHoy {
-    if (_planNutricional.isEmpty) return null;
+    if (_menuSemanal.isEmpty) return null;
     int indexDiaSemana = (currentDay - 1) % 7;
-    if (indexDiaSemana < _planNutricional.length) {
-      return _planNutricional[indexDiaSemana];
+    if (indexDiaSemana < _menuSemanal.length) {
+      return _menuSemanal[indexDiaSemana];
     }
-    return _planNutricional.first;
+    return _menuSemanal.first;
   }
 
   String get grupoEdadUsuario {
@@ -75,7 +83,6 @@ class DataProvider with ChangeNotifier {
 
     try {
       print("🤖 Solicitando rutina a Gemini...");
-      // Llamamos al servicio mejorado que incluye reintentos y limpieza
       final jsonString = await _geminiService.generateRoutineJson(user);
 
       if (jsonString == "{}") throw Exception("Respuesta vacía de IA");
@@ -129,7 +136,6 @@ class DataProvider with ChangeNotifier {
         Ejercicio(
           nombre: "Push-ups",
           descanso: "60s",
-          // CORRECCIÓN: Valores como String ("15" en vez de 15)
           repeticionesPorEdad: {"20s": "15", "30s": "12", "40s_mas": "10"},
         ),
         Ejercicio(
@@ -157,10 +163,10 @@ class DataProvider with ChangeNotifier {
     return RutinaDia(dia: 0, enfoque: enfoque, ejercicios: ejercicios);
   }
 
-  // --- Métodos de Carga de Datos (OPTIMIZADO) ---
+  // --- Métodos de Carga de Datos (ACTUALIZADO) ---
   Future<void> loadData() async {
-    // OPTIMIZACIÓN: Si ya tenemos datos, no recargamos los archivos pesados
-    if (_rutinaCompleta.isNotEmpty && _planNutricional.isNotEmpty) {
+    // Si ya tenemos datos, no recargamos
+    if (_rutinaCompleta.isNotEmpty && _fullNutritionalPlan.isNotEmpty) {
       await _loadPreferences();
       isLoading = false;
       notifyListeners();
@@ -169,6 +175,7 @@ class DataProvider with ChangeNotifier {
 
     await _loadPreferences();
     try {
+      // 1. Cargar Reto 45
       final workoutString = await rootBundle.loadString(
         'assets/data/reto45.json',
       );
@@ -177,11 +184,17 @@ class DataProvider with ChangeNotifier {
           .map((x) => RutinaDia.fromJson(x))
           .toList();
 
+      // 2. Cargar Plan Nutricional Completo
       final dietString = await rootBundle.loadString(
         'assets/data/plan-nutri.json',
       );
       final dietJson = json.decode(dietString);
-      _planNutricional = (dietJson['menu_semanal'] as List)
+
+      // Guardamos el JSON crudo para mostrar info del profesional, etc.
+      _fullNutritionalPlan = dietJson;
+
+      // También guardamos el menú como lista de objetos (para compatibilidad)
+      _menuSemanal = (dietJson['menu_semanal'] as List)
           .map((x) => PlanDiario.fromJson(x))
           .toList();
 
