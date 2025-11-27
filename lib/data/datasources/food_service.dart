@@ -2,7 +2,6 @@ import 'package:openfoodfacts/openfoodfacts.dart';
 
 class FoodService {
   Future<List<Product>> searchFood(String query) async {
-    // Configuración corregida con el parámetro 'version' obligatorio
     ProductSearchQueryConfiguration configuration =
         ProductSearchQueryConfiguration(
           parametersList: <Parameter>[
@@ -15,20 +14,37 @@ class FoodService {
             ProductField.NUTRIMENTS,
             ProductField.IMAGE_FRONT_URL,
           ],
-          version: ProductQueryVersion.v3, // <--- ESTA ES LA LÍNEA QUE FALTABA
+          version: ProductQueryVersion.v3, // CORRECCIÓN CRÍTICA
         );
 
     try {
       final SearchResult result = await OpenFoodAPIClient.searchProducts(
-        null, // Pasamos null si no hay usuario autenticado en la API
+        null,
         configuration,
       );
-
       return result.products ?? [];
     } catch (e) {
-      print("Error buscando comida: $e");
       return [];
     }
+  }
+
+  Future<Product?> getProductByBarcode(String barcode) async {
+    final ProductQueryConfiguration configuration = ProductQueryConfiguration(
+      barcode,
+      language: OpenFoodFactsLanguage.SPANISH,
+      fields: [
+        ProductField.NAME,
+        ProductField.NUTRIMENTS,
+        ProductField.IMAGE_FRONT_URL,
+      ],
+      version: ProductQueryVersion.v3,
+    );
+    final ProductResultV3 result = await OpenFoodAPIClient.getProductV3(
+      configuration,
+    );
+    return result.status == ProductResultV3.statusSuccess
+        ? result.product
+        : null;
   }
 
   double getCalories(Product product) {

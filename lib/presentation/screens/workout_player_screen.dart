@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:confetti/confetti.dart';
 import '../../data/models/workout_model.dart';
+import '../../data/datasources/exercise_assets.dart';
 
 class WorkoutPlayerScreen extends StatefulWidget {
   final List<Ejercicio> rutina;
   const WorkoutPlayerScreen({super.key, required this.rutina});
-
   @override
   State<WorkoutPlayerScreen> createState() => _WorkoutPlayerScreenState();
 }
@@ -20,7 +21,10 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
   int _timeLeft = 0;
   bool _isResting = false;
   bool _isCompleted = false;
+  bool _isPaused = false;
   late ConfettiController _confettiController;
+  final Color _darkBg = const Color(0xFF0F172A);
+  final Color _accentColor = const Color(0xFFFACC15);
 
   @override
   void initState() {
@@ -38,30 +42,25 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     await flutterTts.setSpeechRate(0.5);
   }
 
-  void _speak(String text) async {
-    await flutterTts.speak(text);
-  }
+  void _speak(String text) async => await flutterTts.speak(text);
 
   void _startExercise() {
     final ex = widget.rutina[_currentIndex];
-    _speak("Próximo ejercicio: ${ex.nombre}. ¡Vamos!");
+    _speak("Vamos con ${ex.nombre}");
     setState(() {
       _isResting = false;
-      if (ex.esPorTiempo) {
-        _timeLeft = ex.duracionSegundos > 0
-            ? ex.duracionSegundos
-            : 45; // Default
-        _startTimer();
-      } else {
-        _timeLeft = 0;
-      }
+      _timeLeft = ex.esPorTiempo
+          ? (ex.duracionSegundos > 0 ? ex.duracionSegundos : 45)
+          : 0;
+      if (ex.esPorTiempo) _startTimer();
     });
   }
 
   void _startRest() {
     final ex = widget.rutina[_currentIndex];
     int descanso = int.tryParse(ex.descanso) ?? 30;
-    _speak("Descansa por $descanso segundos.");
+    HapticFeedback.mediumImpact();
+    _speak("Descansa $descanso segundos.");
     setState(() {
       _isResting = true;
       _timeLeft = descanso;
@@ -72,16 +71,15 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isPaused) return;
       if (_timeLeft > 0) {
         setState(() => _timeLeft--);
       } else {
         _timer?.cancel();
-        if (_isResting) {
+        if (_isResting)
           _nextExercise();
-        } else {
-          // Si era ejercicio por tiempo, pasamos a descanso automático
+        else
           _startRest();
-        }
       }
     });
   }
@@ -96,9 +94,10 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
   }
 
   void _finishWorkout() {
+    HapticFeedback.heavyImpact();
     setState(() => _isCompleted = true);
     _confettiController.play();
-    _speak("¡Felicidades! Has completado tu entrenamiento de hoy.");
+    _speak("¡Rutina completada!");
   }
 
   @override
@@ -112,119 +111,136 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isCompleted) return _buildCompletionScreen();
-
     final ejercicio = widget.rutina[_currentIndex];
-    final totalTime = _isResting
-        ? (int.tryParse(ejercicio.descanso) ?? 30)
-        : (ejercicio.duracionSegundos > 0 ? ejercicio.duracionSegundos : 45);
-
-    double progress = _timeLeft > 0 ? _timeLeft / totalTime : 0.0;
+    final String assetPath = ExerciseAssets.getAssetFor(ejercicio.nombre);
+    final bool isNetwork = ExerciseAssets.isNetwork(assetPath);
 
     return Scaffold(
-      backgroundColor: _isResting ? Colors.blueGrey[900] : Colors.white,
-      appBar: AppBar(
-        backgroundColor: _isResting ? Colors.transparent : Colors.white,
-        elevation: 0,
-        iconTheme: IconThemeData(
-          color: _isResting ? Colors.white : Colors.black,
-        ),
-        title: Text(
-          _isResting
-              ? "DESCANSO"
-              : "EJERCICIO ${_currentIndex + 1}/${widget.rutina.length}",
-          style: TextStyle(
-            color: _isResting ? Colors.white : Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      backgroundColor: _darkBg,
+      body: Stack(
         children: [
-          // Imagen o Animación
           if (!_isResting)
-            Container(
-              height: 250,
-              margin: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(20),
-                // Aquí iría: image: NetworkImage(ejercicio.imageUrl ?? "")
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.fitness_center,
-                  size: 80,
-                  color: Colors.grey[400],
-                ),
+            Positioned.fill(
+              child: Opacity(
+                opacity: 0.4,
+                child: isNetwork
+                    ? Image.network(assetPath, fit: BoxFit.cover)
+                    : Image.asset(assetPath, fit: BoxFit.cover),
               ),
             ),
-
-          // Nombre y Detalles
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              _isResting
-                  ? "Siguiente: ${widget.rutina[_currentIndex + 1 < widget.rutina.length ? _currentIndex + 1 : _currentIndex].nombre}"
-                  : ejercicio.nombre,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: _isResting ? Colors.white : Colors.black87,
-              ),
-            ),
-          ),
-
-          // Timer Circular
-          if (_isResting || ejercicio.esPorTiempo)
-            CircularPercentIndicator(
-              radius: 80.0,
-              lineWidth: 12.0,
-              percent: progress.clamp(0.0, 1.0),
-              center: Text(
-                "$_timeLeft",
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: _isResting ? Colors.white : Colors.black,
+          SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      Text(
+                        "${_currentIndex + 1} / ${widget.rutina.length}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 40),
+                    ],
+                  ),
                 ),
-              ),
-              progressColor: _isResting
-                  ? Colors.greenAccent
-                  : const Color(0xFF8B5CF6),
-              backgroundColor: Colors.grey.withOpacity(0.2),
-              circularStrokeCap: CircularStrokeCap.round,
-            ),
-
-          // Botón de Acción
-          Padding(
-            padding: const EdgeInsets.all(30),
-            child: ElevatedButton(
-              onPressed: () {
-                _timer?.cancel();
-                if (_isResting) {
-                  _nextExercise();
-                } else {
-                  _startRest();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8B5CF6),
-                minimumSize: const Size(double.infinity, 60),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        _isResting
+                            ? "DESCANSO"
+                            : ejercicio.nombre.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: _isResting ? Colors.greenAccent : Colors.white,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w900,
+                          shadows: const [
+                            Shadow(color: Colors.black, blurRadius: 10),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      CircularPercentIndicator(
+                        radius: 100.0,
+                        lineWidth: 12.0,
+                        percent: 1.0,
+                        center: Text(
+                          _isResting || ejercicio.esPorTiempo
+                              ? "$_timeLeft"
+                              : "${ejercicio.getDetalleParaUsuario("30s")}",
+                          style: const TextStyle(
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        progressColor: _isResting ? Colors.green : _accentColor,
+                        backgroundColor: Colors.white24,
+                        circularStrokeCap: CircularStrokeCap.round,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              child: Text(
-                _isResting ? "OMITIR DESCANSO" : "TERMINADO",
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (ejercicio.esPorTiempo)
+                        FloatingActionButton(
+                          heroTag: "pause",
+                          backgroundColor: Colors.white24,
+                          onPressed: () =>
+                              setState(() => _isPaused = !_isPaused),
+                          child: Icon(
+                            _isPaused ? Icons.play_arrow : Icons.pause,
+                          ),
+                        ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _timer?.cancel();
+                            if (_isResting)
+                              _nextExercise();
+                            else
+                              _startRest();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _accentColor,
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          child: Text(
+                            _isResting ? "¡A DARLE!" : "LISTO",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
@@ -236,6 +252,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     return Stack(
       children: [
         Scaffold(
+          backgroundColor: _darkBg,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -243,19 +260,26 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
                 const Icon(Icons.emoji_events, size: 100, color: Colors.amber),
                 const SizedBox(height: 20),
                 const Text(
-                  "¡Entrenamiento Terminado!",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  "¡ENTRENAMIENTO FINALIZADO!",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Volver al Inicio"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _accentColor,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Text("VOLVER AL MENU"),
                 ),
               ],
             ),
           ),
         ),
-        // CORRECCIÓN AQUÍ: Usamos 'alignment' en lugar de 'top'
         Align(
           alignment: Alignment.topCenter,
           child: ConfettiWidget(
